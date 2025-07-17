@@ -10,7 +10,6 @@ npm install react-native-sportscar
 
 ## Usage
 
-
 ```js
 import { multiply } from 'react-native-sportscar';
 
@@ -18,7 +17,6 @@ import { multiply } from 'react-native-sportscar';
 
 const result = multiply(3, 7);
 ```
-
 
 ## Contributing
 

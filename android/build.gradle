@@ -75,7 +75,8 @@ dependencies {
   implementation "com.facebook.react:react-android"
   implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
   implementation "androidx.media:media:1.6.0"
-   implementation 'com.google.android.exoplayer:exoplayer:2.19.1'
+  implementation 'com.google.android.exoplayer:exoplayer:2.19.1'
+  implementation 'com.github.bumptech.glide:glide:4.16.0'
 }
 
 react {
