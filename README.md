@@ -101,6 +101,45 @@ buildscript {
 
 ## Usage
 
+### React Hooks
+
+The library provides custom React hooks for easier state management:
+
+#### usePlaybackStateChange Hook
+
+A simple hook for tracking Android Auto playback state:
+
+```typescript
+import { usePlaybackStateChange } from 'react-native-sportscar';
+
+const MyComponent = () => {
+  const {
+    playbackInfo,
+    isLoading,
+    isPlaying,
+    isStopped,
+    isBuffering,
+    refresh,
+  } = usePlaybackStateChange({
+    fetchInitialState: true,
+    onStateChange: (info) => {
+      console.log('Playback state changed:', info.state);
+    },
+  });
+
+  return (
+    <View>
+      <Text>State: {playbackInfo?.state}</Text>
+      <Text>Playing: {isPlaying ? 'Yes' : 'No'}</Text>
+      <Text>Stopped: {isStopped ? 'Yes' : 'No'}</Text>
+      <Text>Buffering: {isBuffering ? 'Yes' : 'No'}</Text>
+    </View>
+  );
+};
+```
+
+
+
 ### Basic Setup
 
 ```typescript
@@ -240,6 +279,7 @@ await AndroidAuto.setLayoutType('GRID');
 | `getPlaybackState` | - | `Promise<PlaybackInfo>` | Get current state |
 | `setLayoutType` | `layoutType: LayoutType` | `Promise<void>` | Set UI layout |
 | `updateMediaLibrary` | `jsonString: string` | `Promise<void>` | Update media library |
+
 
 ### Events
 
