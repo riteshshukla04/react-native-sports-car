@@ -3,8 +3,8 @@ package com.sportscar.utils
 import android.content.Context
 import android.graphics.Bitmap
 import com.bumptech.glide.Glide
-import com.sportscar.models.MediaItemData
-import com.sportscar.models.MediaLibraryData
+import com.sportscar.models.AndroidAutoMediaItem
+import com.sportscar.models.MediaLibrary
 import kotlinx.coroutines.*
 import java.util.concurrent.ConcurrentHashMap
 
@@ -15,10 +15,10 @@ object ImageCache {
     /**
      * Preload all images from media library data
      * @param context Application context
-     * @param mediaLibraryData Media library data containing image URLs
+     * @param mediaLibrary Media library data containing image URLs
      */
-    fun preloadImages(context: Context, mediaLibraryData: MediaLibraryData?) {
-        mediaLibraryData?.let { data ->
+    fun preloadImages(context: Context, mediaLibrary: MediaLibrary?) {
+        mediaLibrary?.let { data ->
             GlobalScope.launch(Dispatchers.IO) {
                 preloadImagesRecursive(context, data.rootItems)
             }
@@ -30,7 +30,7 @@ object ImageCache {
      * @param context Application context
      * @param items List of media items to process
      */
-    private suspend fun preloadImagesRecursive(context: Context, items: List<MediaItemData>) {
+    private suspend fun preloadImagesRecursive(context: Context, items: List<AndroidAutoMediaItem>) {
         items.forEach { item ->
             item.iconUrl?.let { url ->
                 if (url.isNotBlank() && !cachedBitmaps.containsKey(url)) {

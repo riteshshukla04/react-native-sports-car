@@ -10,8 +10,7 @@ import java.util.HashMap
 class SportscarPackage : BaseReactPackage() {
   override fun getModule(name: String, reactContext: ReactApplicationContext): NativeModule? {
     return when (name) {
-      SportscarModule.NAME -> SportscarModule(reactContext)
-      SharedPreferencesModule.NAME -> SharedPreferencesModule(reactContext)
+      AndroidAutoModule.NAME -> AndroidAutoModule(reactContext)
       else -> null
     }
   }
@@ -20,24 +19,14 @@ class SportscarPackage : BaseReactPackage() {
     return ReactModuleInfoProvider {
       val moduleInfos: MutableMap<String, ReactModuleInfo> = HashMap()
       
-      // SportscarModule
-      moduleInfos[SportscarModule.NAME] = ReactModuleInfo(
-        SportscarModule.NAME,
-        SportscarModule.NAME,
+      // AndroidAutoModule
+      moduleInfos[AndroidAutoModule.NAME] = ReactModuleInfo(
+        AndroidAutoModule.NAME,
+        AndroidAutoModule.NAME,
         false,  // canOverrideExistingModule
         false,  // needsEagerInit
         false,  // isCxxModule
-        true // isTurboModule
-      )
-      
-      // SharedPreferencesModule
-      moduleInfos[SharedPreferencesModule.NAME] = ReactModuleInfo(
-        SharedPreferencesModule.NAME,
-        SharedPreferencesModule.NAME,
-        false,  // canOverrideExistingModule
-        false,  // needsEagerInit
-        false,  // isCxxModule
-        false // isTurboModule (SharedPreferences doesn't need TurboModule)
+        false // isTurboModule
       )
       
       moduleInfos

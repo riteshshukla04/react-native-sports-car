@@ -1,7 +1,7 @@
 {
   "name": "react-native-sportscar",
   "version": "0.1.0",
-  "description": "A package for carplay and Android Auto in React native",
+  "description": "React Native Android Auto media player module with customizable UI",
   "main": "./lib/module/index.js",
   "types": "./lib/typescript/src/index.d.ts",
   "exports": {
@@ -16,11 +16,7 @@
     "src",
     "lib",
     "android",
-    "ios",
-    "cpp",
-    "*.podspec",
     "react-native.config.js",
-    "!ios/build",
     "!android/build",
     "!android/gradle",
     "!android/gradlew",
@@ -42,8 +38,12 @@
   },
   "keywords": [
     "react-native",
-    "ios",
-    "android"
+    "android",
+    "android-auto",
+    "media-player",
+    "automotive",
+    "music",
+    "video"
   ],
   "repository": {
     "type": "git",

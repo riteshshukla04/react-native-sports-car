@@ -1,5 +1,5 @@
-import SharedPreferencesExample from './SharedPreferencesExample';
+import AndroidAutoExample from './AndroidAutoExample';
 
 export default function App() {
-  return <SharedPreferencesExample />;
+  return <AndroidAutoExample />;
 }

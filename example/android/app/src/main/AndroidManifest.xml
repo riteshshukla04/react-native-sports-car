@@ -1,6 +1,17 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
+    
+    <!-- Video playback permissions -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    
+    <!-- Android Auto video support -->
+    <uses-feature android:name="android.hardware.screen.landscape" android:required="false" />
+    <uses-feature android:name="android.software.leanback" android:required="false" />
 
     <application
       android:name=".MainApplication"
@@ -27,11 +38,12 @@
           android:name="com.google.android.gms.car.application"
           android:resource="@xml/automotive_app_desc" />
       <service
-          android:name="com.sportscar.MusicService"
-          android:exported="true">
+          android:name="com.sportscar.service.AndroidAutoMediaService"
+          android:exported="true"
+          android:foregroundServiceType="mediaPlayback">
           <intent-filter>
-        <action android:name="android.media.browse.MediaBrowserService" />
-    </intent-filter>
+              <action android:name="android.media.browse.MediaBrowserService" />
+          </intent-filter>
       </service>
     </application>
 </manifest>
