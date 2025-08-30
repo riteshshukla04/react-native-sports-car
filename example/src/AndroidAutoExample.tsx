@@ -25,14 +25,11 @@ const AndroidAutoExample: React.FC = () => {
   const sampleMediaLibrary: MediaLibrary = useMemo(
     () => ({
       layoutType: 'list', // Default layout (can be overridden per folder)
-      appName: 'My Music App',
       rootItems: [
         {
           id: 'music_folder',
           title: 'Music',
           subtitle: 'Browse your music collection',
-          iconUrl:
-            'https://plus.unsplash.com/premium_photo-1664474619075-644dd191935f?q=80&w=1738&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
           isPlayable: false,
           mediaType: 'folder',
           layoutType: 'grid', // Explicitly set music to grid to test
@@ -88,10 +85,7 @@ const AndroidAutoExample: React.FC = () => {
         {
           id: 'videos_folder',
           title: 'Videos',
-
           subtitle: 'Browse your video collections',
-          iconUrl:
-            'https://plus.unsplash.com/premium_photo-1664474619075-644dd191935f?q=80&w=1738&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
           isPlayable: false,
           mediaType: 'folder',
           layoutType: 'list',
@@ -118,18 +112,18 @@ const AndroidAutoExample: React.FC = () => {
           id: 'playlists_folder',
           title: 'Playlists',
           subtitle: 'Your custom playlists',
+          isPlayable: false,
           iconUrl:
             'https://plus.unsplash.com/premium_photo-1664474619075-644dd191935f?q=80&w=1738&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-          isPlayable: false,
           mediaType: 'folder',
-          layoutType: 'list', // Playlists will be displayed as a grid
+          layoutType: 'grid', // Playlists will be displayed as a grid
           children: [
             {
               id: 'playlist_1',
               title: 'Road Trip Mix',
               subtitle: '5 songs • 15 min',
               iconUrl:
-                'https://via.placeholder.com/150/A29BFE/FFFFFF?text=Playlist',
+                'https://plus.unsplash.com/premium_photo-1664474619075-644dd191935f?q=80&w=1738&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
               isPlayable: true,
               mediaType: 'audio',
               mediaUrl:
