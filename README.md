@@ -101,6 +101,80 @@ buildscript {
 
 ## Usage
 
+### React Hooks
+
+The library provides custom React hooks for easier state management:
+
+#### usePlaybackStateChange Hook
+
+A simple hook for tracking Android Auto playback state:
+
+```typescript
+import { usePlaybackStateChange } from 'react-native-sportscar';
+
+const MyComponent = () => {
+  const {
+    playbackInfo,
+    isLoading,
+    isPlaying,
+    isStopped,
+    isBuffering,
+    refresh,
+  } = usePlaybackStateChange({
+    fetchInitialState: true,
+    onStateChange: (info) => {
+      console.log('Playback state changed:', info.state);
+    },
+  });
+
+  return (
+    <View>
+      <Text>State: {playbackInfo?.state}</Text>
+      <Text>Playing: {isPlaying ? 'Yes' : 'No'}</Text>
+      <Text>Stopped: {isStopped ? 'Yes' : 'No'}</Text>
+      <Text>Buffering: {isBuffering ? 'Yes' : 'No'}</Text>
+    </View>
+  );
+};
+```
+
+**Hook Features:**
+- **Simple state tracking**: Tracks if media is playing, stopped, or buffering
+- **Automatic updates**: Listens for playback state changes
+- **Loading state**: Tracks when fetching initial state
+- **Event listeners**: Automatically sets up and cleans up event listeners
+- **Refresh function**: Manual refresh of playback state
+
+### Android Auto Connection Detection
+
+The library provides methods to detect when your phone is connected to Android Auto:
+
+```typescript
+import AndroidAuto from 'react-native-sports-car';
+
+// Check if Android Auto is currently connected
+const isConnected = await AndroidAuto.isAndroidAutoConnected();
+console.log('Android Auto connected:', isConnected);
+
+// Get the number of connected Android Auto clients
+const clientCount = await AndroidAuto.getConnectedClientCount();
+console.log('Connected clients:', clientCount);
+
+// Get list of connected client package names
+const clients = await AndroidAuto.getConnectedClients();
+console.log('Client packages:', clients);
+
+// Listen for connection status changes
+const subscription = AndroidAuto.addEventListener('connectionStatusChanged', (event) => {
+  console.log('Connection status changed:', event.data);
+  // event.data.isConnected - boolean indicating connection status
+  // event.data.timestamp - timestamp of the event
+});
+
+// Clean up subscription
+subscription.remove();
+```
+
 ### Basic Setup
 
 ```typescript
@@ -240,6 +314,9 @@ await AndroidAuto.setLayoutType('GRID');
 | `getPlaybackState` | - | `Promise<PlaybackInfo>` | Get current state |
 | `setLayoutType` | `layoutType: LayoutType` | `Promise<void>` | Set UI layout |
 | `updateMediaLibrary` | `jsonString: string` | `Promise<void>` | Update media library |
+| `isAndroidAutoConnected` | - | `Promise<boolean>` | Check if Android Auto is connected |
+| `getConnectedClientCount` | - | `Promise<number>` | Get number of connected clients |
+| `getConnectedClients` | - | `Promise<string[]>` | Get list of connected client packages |
 
 ### Events
 
@@ -247,6 +324,7 @@ await AndroidAuto.setLayoutType('GRID');
 |-------|---------|-------------|
 | `playbackStateChanged` | `PlaybackInfo` | Playback state updated |
 | `mediaItemChanged` | `{mediaItem: AndroidAutoMediaItem}` | Media item changed |
+| `connectionStatusChanged` | `{isConnected: boolean, timestamp: number}` | Android Auto connection status changed |
 | `error` | `{error: string}` | Error occurred |
 
 ### Types

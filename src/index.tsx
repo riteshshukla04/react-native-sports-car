@@ -166,5 +166,8 @@ export const AndroidAuto: AndroidAutoMediaPlayer = {
 // Export types for TypeScript users
 export * from './types';
 
+// Export hooks
+export * from './hooks';
+
 // Default export
 export default AndroidAuto;
