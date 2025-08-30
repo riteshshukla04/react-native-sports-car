@@ -8,14 +8,16 @@ const AndroidAutoModule = AndroidAutoSpec;
 if (!AndroidAutoModule) {
   throw new Error(
     Platform.OS === 'android'
-      ? 'AndroidAutoModule is not available. This library requires React Native\'s New Architecture (TurboModules). Please enable the New Architecture in your app.'
+      ? "AndroidAutoModule is not available. This library requires React Native's New Architecture (TurboModules). Please enable the New Architecture in your app."
       : 'AndroidAutoModule is only available on Android.'
   );
 }
 
 // Log which architecture is being used (only in development)
 if (__DEV__) {
-  console.log('🏎️ React Native Sportscar: Using New Architecture (TurboModules)');
+  console.log(
+    '🏎️ React Native Sportscar: Using New Architecture (TurboModules)'
+  );
 }
 
 // Create event emitter for media player events (TurboModules use undefined for native module)

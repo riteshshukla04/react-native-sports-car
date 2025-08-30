@@ -7,7 +7,9 @@ import { TurboModuleRegistry } from 'react-native';
 import type { PlaybackInfo } from '../types';
 
 export interface Spec extends TurboModule {
-  readonly initializeMediaLibrary: (mediaLibraryJson: string) => Promise<boolean>;
+  readonly initializeMediaLibrary: (
+    mediaLibraryJson: string
+  ) => Promise<boolean>;
   readonly updateMediaLibrary: (mediaLibraryJson: string) => Promise<boolean>;
   readonly setLayoutType: (layoutType: string) => Promise<boolean>;
   readonly refreshAndroidAutoUI: () => Promise<boolean>;

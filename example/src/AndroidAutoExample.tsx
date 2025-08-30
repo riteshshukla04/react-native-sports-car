@@ -88,7 +88,7 @@ const AndroidAutoExample: React.FC = () => {
         {
           id: 'videos_folder',
           title: 'Videos',
-          
+
           subtitle: 'Browse your video collections',
           iconUrl:
             'https://plus.unsplash.com/premium_photo-1664474619075-644dd191935f?q=80&w=1738&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
@@ -411,10 +411,7 @@ const AndroidAutoExample: React.FC = () => {
         </TouchableOpacity>
       </View>
       <View style={styles.buttonRow}>
-        <TouchableOpacity
-          style={styles.button}
-          onPress={handleRefreshUI}
-        >
+        <TouchableOpacity style={styles.button} onPress={handleRefreshUI}>
           <Text style={styles.buttonText}>🔄 Refresh UI</Text>
         </TouchableOpacity>
       </View>
