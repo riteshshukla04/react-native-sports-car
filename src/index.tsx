@@ -1,10 +1,25 @@
-import { NativeModules, NativeEventEmitter } from 'react-native';
+import { NativeEventEmitter, Platform } from 'react-native';
 import type { AndroidAutoMediaPlayer } from './types';
+import AndroidAutoSpec from './specs/NativeSportscarSpec';
 
-const { AndroidAutoModule } = NativeModules;
+// This library requires React Native's New Architecture (TurboModules)
+const AndroidAutoModule = AndroidAutoSpec;
 
-// Create event emitter for media player events
-const eventEmitter = new NativeEventEmitter(AndroidAutoModule);
+if (!AndroidAutoModule) {
+  throw new Error(
+    Platform.OS === 'android'
+      ? 'AndroidAutoModule is not available. This library requires React Native\'s New Architecture (TurboModules). Please enable the New Architecture in your app.'
+      : 'AndroidAutoModule is only available on Android.'
+  );
+}
+
+// Log which architecture is being used (only in development)
+if (__DEV__) {
+  console.log('🏎️ React Native Sportscar: Using New Architecture (TurboModules)');
+}
+
+// Create event emitter for media player events (TurboModules use undefined for native module)
+const eventEmitter = new NativeEventEmitter(undefined);
 
 /**
  * React Native Android Auto Media Player
@@ -40,6 +55,14 @@ export const AndroidAuto: AndroidAutoMediaPlayer = {
    */
   setLayoutType: (layoutType) => {
     return AndroidAutoModule.setLayoutType(layoutType);
+  },
+
+  /**
+   * Force refresh the Android Auto UI
+   * @returns Promise<boolean> - true if refresh was successful
+   */
+  refreshAndroidAutoUI: () => {
+    return AndroidAutoModule.refreshAndroidAutoUI();
   },
 
   /**

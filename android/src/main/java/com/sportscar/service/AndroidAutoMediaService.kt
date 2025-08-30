@@ -17,6 +17,7 @@ import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import androidx.core.app.NotificationCompat
 import androidx.media.MediaBrowserServiceCompat
+import androidx.media.utils.MediaConstants
 import com.google.android.exoplayer2.*
 import com.google.android.exoplayer2.audio.AudioAttributes
 import com.google.android.exoplayer2.ui.PlayerNotificationManager
@@ -166,6 +167,14 @@ class AndroidAutoMediaService : MediaBrowserServiceCompat() {
             updateServiceLayoutHints()
             notifyChildrenChanged(ROOT_ID)
             println("📱 AndroidAutoMediaService: Layout type set to $newLayoutType")
+        }
+    }
+
+    fun refreshAndroidAutoUI() {
+        serviceScope.launch {
+            updateServiceLayoutHints()
+            notifyChildrenChanged(ROOT_ID)
+            println("🔄 AndroidAutoMediaService: UI manually refreshed")
         }
     }
 
@@ -346,13 +355,12 @@ class AndroidAutoMediaService : MediaBrowserServiceCompat() {
     // MediaBrowserService implementation
     override fun onGetRoot(clientPackageName: String, clientUid: Int, rootHints: Bundle?): BrowserRoot {
         val extras = Bundle().apply {
-            putInt("android.media.browse.CONTENT_STYLE_SUPPORTED", 1)
             val layoutHint = when (mediaLibrary?.layoutType) {
-                LayoutType.LIST -> 1
-                else -> 2
+                LayoutType.LIST -> MediaConstants.DESCRIPTION_EXTRAS_VALUE_CONTENT_STYLE_LIST_ITEM
+                else -> MediaConstants.DESCRIPTION_EXTRAS_VALUE_CONTENT_STYLE_GRID_ITEM
             }
-            putInt("android.media.browse.CONTENT_STYLE_BROWSABLE_HINT", layoutHint)
-            putInt("android.media.browse.CONTENT_STYLE_PLAYABLE_HINT", layoutHint)
+            putInt(MediaConstants.DESCRIPTION_EXTRAS_KEY_CONTENT_STYLE_BROWSABLE, layoutHint)
+            putInt(MediaConstants.DESCRIPTION_EXTRAS_KEY_CONTENT_STYLE_PLAYABLE, layoutHint)
         }
         return BrowserRoot(ROOT_ID, extras)
     }
@@ -420,13 +428,24 @@ class AndroidAutoMediaService : MediaBrowserServiceCompat() {
 
         // Set layout hints and media type information
         val extras = Bundle().apply {
-            putInt("android.media.browse.CONTENT_STYLE_SUPPORTED", 1)
-            val layoutHint = when (mediaLibrary?.layoutType) {
-                LayoutType.LIST -> 1
-                else -> 2
+            // Use item-specific layout type if available, otherwise fall back to library default
+            val effectiveLayoutType = item.layoutType ?: mediaLibrary?.layoutType
+            val layoutHint = when (effectiveLayoutType) {
+                LayoutType.LIST -> MediaConstants.DESCRIPTION_EXTRAS_VALUE_CONTENT_STYLE_LIST_ITEM
+                else -> MediaConstants.DESCRIPTION_EXTRAS_VALUE_CONTENT_STYLE_GRID_ITEM
             }
+            println("🎨 AndroidAutoMediaService: Setting layout for '${item.title}' - type: $effectiveLayoutType, hint: $layoutHint")
+            
+            // WORKAROUND: Set both browsable and playable hints to ensure consistency
+            // This helps prevent layout inheritance issues in Android Auto
+            putInt(MediaConstants.DESCRIPTION_EXTRAS_KEY_CONTENT_STYLE_BROWSABLE, layoutHint)
+            putInt(MediaConstants.DESCRIPTION_EXTRAS_KEY_CONTENT_STYLE_PLAYABLE, layoutHint)
+            
+            // Add unique identifiers to help Android Auto distinguish between items
+            putString("android.media.browse.FOLDER_TYPE", effectiveLayoutType?.name ?: "GRID")
+            putString("android.media.browse.LAYOUT_HINT_ID", "${item.id}_${effectiveLayoutType?.name ?: "GRID"}")
+            
             if (item.isPlayable) {
-                putInt("android.media.browse.CONTENT_STYLE_PLAYABLE_HINT", layoutHint)
                 // Add media type information
                 putString("android.media.metadata.MEDIA_TYPE", item.mediaType.name)
                 if (item.mediaType == MediaType.VIDEO) {
@@ -445,9 +464,8 @@ class AndroidAutoMediaService : MediaBrowserServiceCompat() {
                 item.durationMs?.let { duration ->
                     putLong("android.media.metadata.DURATION", duration)
                 }
-            } else {
-                putInt("android.media.browse.CONTENT_STYLE_BROWSABLE_HINT", layoutHint)
             }
+            // Note: Both browsable and playable hints are already set above
         }
         builder.setExtras(extras)
 
@@ -462,13 +480,12 @@ class AndroidAutoMediaService : MediaBrowserServiceCompat() {
 
     private fun updateServiceLayoutHints() {
         val serviceExtras = Bundle().apply {
-            putInt("android.media.browse.CONTENT_STYLE_SUPPORTED", 1)
             val layoutHint = when (mediaLibrary?.layoutType) {
-                LayoutType.LIST -> 1
-                else -> 2
+                LayoutType.LIST -> MediaConstants.DESCRIPTION_EXTRAS_VALUE_CONTENT_STYLE_LIST_ITEM
+                else -> MediaConstants.DESCRIPTION_EXTRAS_VALUE_CONTENT_STYLE_GRID_ITEM
             }
-            putInt("android.media.browse.CONTENT_STYLE_BROWSABLE_HINT", layoutHint)
-            putInt("android.media.browse.CONTENT_STYLE_PLAYABLE_HINT", layoutHint)
+            putInt(MediaConstants.DESCRIPTION_EXTRAS_KEY_CONTENT_STYLE_BROWSABLE, layoutHint)
+            putInt(MediaConstants.DESCRIPTION_EXTRAS_KEY_CONTENT_STYLE_PLAYABLE, layoutHint)
         }
         mediaSession.setExtras(serviceExtras)
     }

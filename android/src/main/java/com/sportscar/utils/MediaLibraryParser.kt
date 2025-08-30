@@ -113,6 +113,15 @@ object MediaLibraryParser {
             childrenList
         } else null
         
+        // Parse layout type for folder items
+        val layoutType = if (jsonObject.has("layoutType") && mediaType == MediaType.FOLDER) {
+            val layoutString = jsonObject.getString("layoutType").uppercase()
+            when (layoutString) {
+                "LIST" -> LayoutType.LIST
+                else -> LayoutType.GRID
+            }
+        } else null
+        
         // Parse metadata
         val metadata = if (jsonObject.has("metadata")) {
             val metadataJson = jsonObject.getJSONObject("metadata")
@@ -129,6 +138,7 @@ object MediaLibraryParser {
             mediaType = mediaType,
             durationMs = durationMs,
             children = children,
+            layoutType = layoutType,
             metadata = metadata
         )
     }
@@ -239,6 +249,7 @@ object MediaLibraryParser {
             put("mediaType", item.mediaType.name)
             item.durationMs?.let { put("durationMs", it) }
             item.children?.let { put("children", mediaItemsToJsonArray(it)) }
+            item.layoutType?.let { put("layoutType", it.name) }
             item.metadata?.let { put("metadata", metadataToJsonObject(it)) }
         }
     }
