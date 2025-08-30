@@ -4,7 +4,7 @@
 
 import type { TurboModule } from 'react-native';
 import { TurboModuleRegistry } from 'react-native';
-import type { PlaybackInfo } from '../types';
+import type { PlaybackInfo, AppState } from '../types';
 
 export interface Spec extends TurboModule {
   readonly initializeMediaLibrary: (
@@ -20,6 +20,13 @@ export interface Spec extends TurboModule {
   readonly seekTo: (positionMs: number) => Promise<boolean>;
   readonly setPlaybackSpeed: (speed: number) => Promise<boolean>;
   readonly getPlaybackState: () => Promise<PlaybackInfo>;
+  readonly handleAppStateChange: (appState: string) => Promise<boolean>;
+  readonly getCurrentAppState: () => Promise<AppState>;
+  readonly isCurrentlyPlaying: () => Promise<boolean>;
+  readonly getLastPlayedMediaInfo: () => Promise<{
+    mediaId?: string;
+    positionMs: number;
+  } | null>;
 }
 
 export default TurboModuleRegistry.getEnforcing<Spec>('AndroidAutoModule');

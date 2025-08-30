@@ -12,6 +12,7 @@ import com.facebook.react.turbomodule.core.interfaces.TurboModule
 import com.sportscar.service.AndroidAutoMediaService
 import com.sportscar.models.MediaLibrary
 import com.sportscar.utils.MediaLibraryParser
+// BackgroundUpdateManager import removed - not needed
 import kotlinx.coroutines.*
 
 /**
@@ -278,6 +279,70 @@ class AndroidAutoTurboModule(reactContext: ReactApplicationContext) :
     }
 
     /**
+     * Handle app state changes (foreground/background/destroyed)
+     * This allows the React Native app to notify the service about lifecycle changes
+     */
+    override fun handleAppStateChange(appState: String, promise: Promise) {
+        try {
+            val success = mediaService?.handleAppStateChange(appState) ?: false
+            promise.resolve(success)
+            if (success) {
+                println("📱 AndroidAutoTurboModule: App state changed to $appState")
+            }
+        } catch (e: Exception) {
+            println("❌ AndroidAutoTurboModule: Failed to handle app state change - ${e.message}")
+            promise.reject("APP_STATE_ERROR", "Failed to handle app state change", e)
+        }
+    }
+
+    /**
+     * Get current app state
+     */
+    override fun getCurrentAppState(promise: Promise) {
+        try {
+            val appState = mediaService?.getCurrentAppState() ?: "foreground"
+            promise.resolve(appState)
+        } catch (e: Exception) {
+            println("❌ AndroidAutoTurboModule: Failed to get app state - ${e.message}")
+            promise.reject("APP_STATE_ERROR", "Failed to get app state", e)
+        }
+    }
+
+    /**
+     * Check if service is currently playing
+     */
+    override fun isCurrentlyPlaying(promise: Promise) {
+        try {
+            val isPlaying = mediaService?.isCurrentlyPlaying() ?: false
+            promise.resolve(isPlaying)
+        } catch (e: Exception) {
+            println("❌ AndroidAutoTurboModule: Failed to check playing state - ${e.message}")
+            promise.reject("PLAYING_STATE_ERROR", "Failed to check playing state", e)
+        }
+    }
+
+    /**
+     * Get last played media information
+     */
+    override fun getLastPlayedMediaInfo(promise: Promise) {
+        try {
+            val mediaInfo = mediaService?.getLastPlayedMediaInfo()
+            if (mediaInfo != null) {
+                val map = Arguments.createMap().apply {
+                    putString("mediaId", mediaInfo.first)
+                    putDouble("positionMs", mediaInfo.second.toDouble())
+                }
+                promise.resolve(map)
+            } else {
+                promise.resolve(null)
+            }
+        } catch (e: Exception) {
+            println("❌ AndroidAutoTurboModule: Failed to get last played media info - ${e.message}")
+            promise.reject("MEDIA_INFO_ERROR", "Failed to get last played media info", e)
+        }
+    }
+
+    /**
      * Send event to React Native
      */
     private fun sendEvent(eventName: String, params: WritableMap?) {
@@ -316,4 +381,6 @@ class AndroidAutoTurboModule(reactContext: ReactApplicationContext) :
             })
         }
     }
+
+
 }

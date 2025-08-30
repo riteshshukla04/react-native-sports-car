@@ -100,6 +100,22 @@ export interface PlaybackInfo {
 }
 
 /**
+ * App state for lifecycle management
+ */
+export type AppState = 'foreground' | 'background' | 'destroyed';
+
+/**
+ * Last played media information
+ */
+export interface LastPlayedMediaInfo {
+  /** Media ID of the last played item */
+  mediaId?: string;
+
+  /** Position in milliseconds where playback was last stopped */
+  positionMs: number;
+}
+
+/**
  * Media player event types
  */
 export type MediaPlayerEventType =
@@ -176,6 +192,27 @@ export interface AndroidAutoMediaPlayer {
    * Set playback speed
    */
   setPlaybackSpeed(speed: number): Promise<boolean>;
+
+  /**
+   * Handle app state changes (foreground/background/destroyed)
+   * This allows the service to respond to app lifecycle changes
+   */
+  handleAppStateChange(appState: AppState): Promise<boolean>;
+
+  /**
+   * Get current app state
+   */
+  getCurrentAppState(): Promise<AppState>;
+
+  /**
+   * Check if service is currently playing
+   */
+  isCurrentlyPlaying(): Promise<boolean>;
+
+  /**
+   * Get last played media information
+   */
+  getLastPlayedMediaInfo(): Promise<LastPlayedMediaInfo | null>;
 
   /**
    * Add event listener for media player events

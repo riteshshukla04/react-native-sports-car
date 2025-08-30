@@ -127,6 +127,40 @@ export const AndroidAuto: AndroidAutoMediaPlayer = {
   },
 
   /**
+   * Handle app state changes (foreground/background/destroyed)
+   * This allows the service to respond to app lifecycle changes
+   * @param appState - Current app state
+   * @returns Promise<boolean> - true if state change was handled successfully
+   */
+  handleAppStateChange: (appState) => {
+    return AndroidAutoModule.handleAppStateChange(appState);
+  },
+
+  /**
+   * Get current app state
+   * @returns Promise<AppState> - Current app state
+   */
+  getCurrentAppState: () => {
+    return AndroidAutoModule.getCurrentAppState();
+  },
+
+  /**
+   * Check if service is currently playing
+   * @returns Promise<boolean> - true if currently playing
+   */
+  isCurrentlyPlaying: () => {
+    return AndroidAutoModule.isCurrentlyPlaying();
+  },
+
+  /**
+   * Get last played media information
+   * @returns Promise<LastPlayedMediaInfo | null> - Last played media info or null
+   */
+  getLastPlayedMediaInfo: () => {
+    return AndroidAutoModule.getLastPlayedMediaInfo();
+  },
+
+  /**
    * Add event listener for media player events
    * @param eventType - Type of event to listen for
    * @param listener - Callback function
