@@ -18,9 +18,10 @@ A React Native module for Android Auto integration with customizable media playe
 ## Installation
 
 ```bash
-npm install react-native-sports-car
+npm install react-native-sportscar
+
 # or
-yarn add react-native-sports-car
+yarn add react-native-sportscar
 ```
 
 ## Requirements
