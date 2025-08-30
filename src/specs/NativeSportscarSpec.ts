@@ -3,7 +3,7 @@
  */
 
 import type { TurboModule } from 'react-native';
-import { TurboModuleRegistry } from 'react-native';
+import { Platform, TurboModuleRegistry } from 'react-native';
 import type { PlaybackInfo, AppState } from '../types';
 
 export interface Spec extends TurboModule {
@@ -28,5 +28,11 @@ export interface Spec extends TurboModule {
     positionMs: number;
   } | null>;
 }
-
-export default TurboModuleRegistry.getEnforcing<Spec>('AndroidAutoModule');
+let AndroidAutoModule: Spec | null = null;
+if (Platform.OS === 'android') {
+  AndroidAutoModule =
+    TurboModuleRegistry.getEnforcing<Spec>('AndroidAutoModule');
+} else {
+  AndroidAutoModule = null;
+}
+export default AndroidAutoModule;

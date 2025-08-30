@@ -3,15 +3,10 @@ import type { AndroidAutoMediaPlayer } from './types';
 import AndroidAutoSpec from './specs/NativeSportscarSpec';
 
 // This library requires React Native's New Architecture (TurboModules)
-const AndroidAutoModule = AndroidAutoSpec;
+const AndroidAutoModule = Platform.OS === 'android' ? AndroidAutoSpec : null;
 
-if (!AndroidAutoModule) {
-  throw new Error(
-    Platform.OS === 'android'
-      ? "AndroidAutoModule is not available. This library requires React Native's New Architecture (TurboModules). Please enable the New Architecture in your app."
-      : 'AndroidAutoModule is only available on Android.'
-  );
-}
+// Platform detection
+const isIOS = Platform.OS === 'ios';
 
 // Log which architecture is being used (only in development)
 if (__DEV__) {
@@ -21,7 +16,26 @@ if (__DEV__) {
 }
 
 // Create event emitter for media player events (TurboModules use undefined for native module)
-const eventEmitter = new NativeEventEmitter(undefined);
+// On iOS, we create a dummy event emitter that does nothing
+const eventEmitter = isIOS
+  ? {
+      addListener: () => ({
+        remove: () => {
+          console.warn(
+            '🏎️ React Native Sportscar: Dummy event listener removed'
+          );
+        },
+      }),
+      removeAllListeners: () => {
+        console.warn(
+          '🏎️ React Native Sportscar: Dummy removeAllListeners called'
+        );
+      },
+      emit: () => {
+        console.warn('🏎️ React Native Sportscar: Dummy event emit called');
+      },
+    }
+  : new NativeEventEmitter(undefined);
 
 /**
  * React Native Android Auto Media Player
@@ -29,14 +43,56 @@ const eventEmitter = new NativeEventEmitter(undefined);
  * This module provides a bridge between React Native and Android Auto
  * for creating customizable media player experiences in vehicles.
  */
+
+// Helper function to check platform and module availability
+const checkPlatformAndModule = (methodName: string) => {
+  if (isIOS) {
+    console.warn(
+      `🏎️ React Native Sportscar: iOS does not support ${methodName}`
+    );
+    return false;
+  }
+
+  if (!AndroidAutoModule) {
+    console.warn('🏎️ React Native Sportscar: AndroidAutoModule not available');
+    return false;
+  }
+
+  return true;
+};
+
+// Helper function to emit events safely
+const emitEvent = (eventType: string, data?: any) => {
+  if (isIOS) {
+    console.warn(
+      `🏎️ React Native Sportscar: iOS does not support event emission for ${eventType}`
+    );
+    return;
+  }
+
+  try {
+    eventEmitter.emit(eventType, data);
+  } catch (error) {
+    console.error(
+      `🏎️ React Native Sportscar: Failed to emit event ${eventType}:`,
+      error
+    );
+  }
+};
+
 export const AndroidAuto: AndroidAutoMediaPlayer = {
   /**
    * Initialize the Android Auto media service with your media library
    * @param mediaLibrary - The media library structure to display in Android Auto
    * @returns Promise<boolean> - true if initialization was successful
    */
+
   initializeMediaLibrary: (mediaLibrary) => {
-    return AndroidAutoModule.initializeMediaLibrary(
+    if (!checkPlatformAndModule('initializeMediaLibrary')) {
+      return Promise.resolve(false);
+    }
+
+    return AndroidAutoModule!.initializeMediaLibrary(
       JSON.stringify(mediaLibrary)
     );
   },
@@ -47,7 +103,11 @@ export const AndroidAuto: AndroidAutoMediaPlayer = {
    * @returns Promise<boolean> - true if update was successful
    */
   updateMediaLibrary: (mediaLibrary) => {
-    return AndroidAutoModule.updateMediaLibrary(JSON.stringify(mediaLibrary));
+    if (!checkPlatformAndModule('updateMediaLibrary')) {
+      return Promise.resolve(false);
+    }
+
+    return AndroidAutoModule!.updateMediaLibrary(JSON.stringify(mediaLibrary));
   },
 
   /**
@@ -56,7 +116,11 @@ export const AndroidAuto: AndroidAutoMediaPlayer = {
    * @returns Promise<boolean> - true if layout was set successfully
    */
   setLayoutType: (layoutType) => {
-    return AndroidAutoModule.setLayoutType(layoutType);
+    if (!checkPlatformAndModule('setLayoutType')) {
+      return Promise.resolve(false);
+    }
+
+    return AndroidAutoModule!.setLayoutType(layoutType);
   },
 
   /**
@@ -64,7 +128,11 @@ export const AndroidAuto: AndroidAutoMediaPlayer = {
    * @returns Promise<boolean> - true if refresh was successful
    */
   refreshAndroidAutoUI: () => {
-    return AndroidAutoModule.refreshAndroidAutoUI();
+    if (!checkPlatformAndModule('refreshAndroidAutoUI')) {
+      return Promise.resolve(false);
+    }
+
+    return AndroidAutoModule!.refreshAndroidAutoUI();
   },
 
   /**
@@ -73,7 +141,11 @@ export const AndroidAuto: AndroidAutoMediaPlayer = {
    * @returns Promise<boolean> - true if playback started successfully
    */
   playMedia: (mediaId) => {
-    return AndroidAutoModule.playMedia(mediaId);
+    if (!checkPlatformAndModule('playMedia')) {
+      return Promise.resolve(false);
+    }
+
+    return AndroidAutoModule!.playMedia(mediaId);
   },
 
   /**
@@ -81,7 +153,11 @@ export const AndroidAuto: AndroidAutoMediaPlayer = {
    * @returns Promise<boolean> - true if pause was successful
    */
   pause: () => {
-    return AndroidAutoModule.pause();
+    if (!checkPlatformAndModule('pause')) {
+      return Promise.resolve(false);
+    }
+
+    return AndroidAutoModule!.pause();
   },
 
   /**
@@ -89,7 +165,11 @@ export const AndroidAuto: AndroidAutoMediaPlayer = {
    * @returns Promise<boolean> - true if resume was successful
    */
   resume: () => {
-    return AndroidAutoModule.resume();
+    if (!checkPlatformAndModule('resume')) {
+      return Promise.resolve(false);
+    }
+
+    return AndroidAutoModule!.resume();
   },
 
   /**
@@ -97,7 +177,11 @@ export const AndroidAuto: AndroidAutoMediaPlayer = {
    * @returns Promise<boolean> - true if stop was successful
    */
   stop: () => {
-    return AndroidAutoModule.stop();
+    if (!checkPlatformAndModule('stop')) {
+      return Promise.resolve(false);
+    }
+
+    return AndroidAutoModule!.stop();
   },
 
   /**
@@ -106,7 +190,11 @@ export const AndroidAuto: AndroidAutoMediaPlayer = {
    * @returns Promise<boolean> - true if seek was successful
    */
   seekTo: (positionMs) => {
-    return AndroidAutoModule.seekTo(positionMs);
+    if (!checkPlatformAndModule('seekTo')) {
+      return Promise.resolve(false);
+    }
+
+    return AndroidAutoModule!.seekTo(positionMs);
   },
 
   /**
@@ -114,7 +202,19 @@ export const AndroidAuto: AndroidAutoMediaPlayer = {
    * @returns Promise<PlaybackState> - Current playback state
    */
   getPlaybackState: () => {
-    return AndroidAutoModule.getPlaybackState();
+    if (!checkPlatformAndModule('getPlaybackState')) {
+      return Promise.resolve({
+        state: 'stopped',
+        currentMediaId: undefined,
+        positionMs: 0,
+        durationMs: 0,
+        playbackSpeed: 1.0,
+        shuffleEnabled: false,
+        repeatMode: 'none',
+      });
+    }
+
+    return AndroidAutoModule!.getPlaybackState();
   },
 
   /**
@@ -123,7 +223,11 @@ export const AndroidAuto: AndroidAutoMediaPlayer = {
    * @returns Promise<boolean> - true if speed was set successfully
    */
   setPlaybackSpeed: (speed) => {
-    return AndroidAutoModule.setPlaybackSpeed(speed);
+    if (!checkPlatformAndModule('setPlaybackSpeed')) {
+      return Promise.resolve(false);
+    }
+
+    return AndroidAutoModule!.setPlaybackSpeed(speed);
   },
 
   /**
@@ -133,7 +237,11 @@ export const AndroidAuto: AndroidAutoMediaPlayer = {
    * @returns Promise<boolean> - true if state change was handled successfully
    */
   handleAppStateChange: (appState) => {
-    return AndroidAutoModule.handleAppStateChange(appState);
+    if (!checkPlatformAndModule('handleAppStateChange')) {
+      return Promise.resolve(false);
+    }
+
+    return AndroidAutoModule!.handleAppStateChange(appState);
   },
 
   /**
@@ -141,7 +249,11 @@ export const AndroidAuto: AndroidAutoMediaPlayer = {
    * @returns Promise<AppState> - Current app state
    */
   getCurrentAppState: () => {
-    return AndroidAutoModule.getCurrentAppState();
+    if (!checkPlatformAndModule('getCurrentAppState')) {
+      return Promise.resolve('foreground');
+    }
+
+    return AndroidAutoModule!.getCurrentAppState();
   },
 
   /**
@@ -149,7 +261,11 @@ export const AndroidAuto: AndroidAutoMediaPlayer = {
    * @returns Promise<boolean> - true if currently playing
    */
   isCurrentlyPlaying: () => {
-    return AndroidAutoModule.isCurrentlyPlaying();
+    if (!checkPlatformAndModule('isCurrentlyPlaying')) {
+      return Promise.resolve(false);
+    }
+
+    return AndroidAutoModule!.isCurrentlyPlaying();
   },
 
   /**
@@ -157,7 +273,11 @@ export const AndroidAuto: AndroidAutoMediaPlayer = {
    * @returns Promise<LastPlayedMediaInfo | null> - Last played media info or null
    */
   getLastPlayedMediaInfo: () => {
-    return AndroidAutoModule.getLastPlayedMediaInfo();
+    if (!checkPlatformAndModule('getLastPlayedMediaInfo')) {
+      return Promise.resolve(null);
+    }
+
+    return AndroidAutoModule!.getLastPlayedMediaInfo();
   },
 
   /**
@@ -167,6 +287,12 @@ export const AndroidAuto: AndroidAutoMediaPlayer = {
    * @returns Subscription object with remove() method
    */
   addEventListener: (eventType, listener) => {
+    if (isIOS) {
+      throw new Error(
+        '🏎️ React Native Sportscar: iOS does not support addEventListener'
+      );
+    }
+
     return eventEmitter.addListener(eventType, listener);
   },
 
@@ -176,6 +302,12 @@ export const AndroidAuto: AndroidAutoMediaPlayer = {
    * @param listener - Subscription object returned by addEventListener
    */
   removeEventListener: (_eventType, listener) => {
+    if (isIOS) {
+      throw new Error(
+        '🏎️ React Native Sportscar: iOS does not support removeEventListener'
+      );
+    }
+
     if (listener && typeof listener.remove === 'function') {
       listener.remove();
     }
@@ -186,6 +318,12 @@ export const AndroidAuto: AndroidAutoMediaPlayer = {
    * @param eventType - Type of event to remove all listeners for
    */
   removeAllListeners: (eventType?: string) => {
+    if (isIOS) {
+      throw new Error(
+        '🏎️ React Native Sportscar: iOS does not support removeAllListeners'
+      );
+    }
+
     if (eventType) {
       eventEmitter.removeAllListeners(eventType);
     } else {
@@ -194,6 +332,15 @@ export const AndroidAuto: AndroidAutoMediaPlayer = {
         eventEmitter.removeAllListeners(type);
       });
     }
+  },
+
+  /**
+   * Emit an event (for testing purposes)
+   * @param eventType - Type of event to emit
+   * @param data - Event data
+   */
+  emit: (eventType, data) => {
+    emitEvent(eventType, data);
   },
 };
 

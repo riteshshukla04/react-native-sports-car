@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Platform } from 'react-native';
 import AndroidAutoExample from './AndroidAutoExample';
 import AppLifecycleExample from './AppLifecycleExample';
 
@@ -7,6 +7,9 @@ export default function App() {
   const [currentExample, setCurrentExample] = React.useState<
     'basic' | 'lifecycle'
   >('basic');
+  if (Platform.OS === 'ios') {
+    return <Text> Only Android is supported on iOS</Text>
+  }
 
   return (
     <View style={styles.container}>
