@@ -30,6 +30,7 @@ data class AndroidAutoMediaItem(
     val mediaType: MediaType = MediaType.AUDIO,
     val durationMs: Long? = null,
     val children: List<AndroidAutoMediaItem>? = null,
+    val layoutType: LayoutType? = null,
     val metadata: Map<String, Any>? = null
 )
 

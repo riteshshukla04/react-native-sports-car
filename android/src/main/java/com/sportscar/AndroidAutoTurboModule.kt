@@ -8,13 +8,19 @@ import android.os.IBinder
 import com.facebook.react.bridge.*
 import com.facebook.react.module.annotations.ReactModule
 import com.facebook.react.modules.core.DeviceEventManagerModule
+import com.facebook.react.turbomodule.core.interfaces.TurboModule
 import com.sportscar.service.AndroidAutoMediaService
 import com.sportscar.models.MediaLibrary
 import com.sportscar.utils.MediaLibraryParser
 import kotlinx.coroutines.*
 
-@ReactModule(name = AndroidAutoModule.NAME)
-class AndroidAutoModule(reactContext: ReactApplicationContext) : ReactContextBaseJavaModule(reactContext) {
+/**
+ * Turbo Module implementation for Android Auto
+ * This implements the new architecture while maintaining the same functionality
+ */
+@ReactModule(name = AndroidAutoTurboModule.NAME)
+class AndroidAutoTurboModule(reactContext: ReactApplicationContext) : 
+    NativeSportscarSpecSpec(reactContext) {
 
     companion object {
         const val NAME = "AndroidAutoModule"
@@ -29,13 +35,13 @@ class AndroidAutoModule(reactContext: ReactApplicationContext) : ReactContextBas
             val binder = service as AndroidAutoMediaService.LocalBinder
             mediaService = binder.getService()
             serviceBound = true
-            println("🔗 AndroidAutoModule: Connected to media service")
+            println("🔗 AndroidAutoTurboModule: Connected to media service")
         }
 
         override fun onServiceDisconnected(name: ComponentName?) {
             mediaService = null
             serviceBound = false
-            println("❌ AndroidAutoModule: Disconnected from media service")
+            println("❌ AndroidAutoTurboModule: Disconnected from media service")
         }
     }
 
@@ -46,8 +52,8 @@ class AndroidAutoModule(reactContext: ReactApplicationContext) : ReactContextBas
         bindToMediaService()
     }
 
-    override fun onCatalystInstanceDestroy() {
-        super.onCatalystInstanceDestroy()
+    override fun invalidate() {
+        super.invalidate()
         unbindFromMediaService()
         serviceScope.cancel()
     }
@@ -57,9 +63,9 @@ class AndroidAutoModule(reactContext: ReactApplicationContext) : ReactContextBas
             val intent = Intent(reactApplicationContext, AndroidAutoMediaService::class.java)
             reactApplicationContext.startService(intent)
             reactApplicationContext.bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE)
-            println("🚀 AndroidAutoModule: Binding to media service")
+            println("🚀 AndroidAutoTurboModule: Binding to media service")
         } catch (e: Exception) {
-            println("❌ AndroidAutoModule: Failed to bind to service - ${e.message}")
+            println("❌ AndroidAutoTurboModule: Failed to bind to service - ${e.message}")
         }
     }
 
@@ -70,27 +76,26 @@ class AndroidAutoModule(reactContext: ReactApplicationContext) : ReactContextBas
                 serviceBound = false
             }
         } catch (e: Exception) {
-            println("❌ AndroidAutoModule: Error unbinding service - ${e.message}")
+            println("❌ AndroidAutoTurboModule: Error unbinding service - ${e.message}")
         }
     }
 
     /**
      * Initialize the Android Auto media service with a media library
      */
-    @ReactMethod
-    fun initializeMediaLibrary(mediaLibraryJson: String, promise: Promise) {
+    override fun initializeMediaLibrary(mediaLibraryJson: String, promise: Promise) {
         serviceScope.launch {
             try {
                 val mediaLibrary = MediaLibraryParser.parseFromJson(mediaLibraryJson)
                 if (mediaLibrary != null) {
                     mediaService?.initializeMediaLibrary(mediaLibrary)
                     promise.resolve(true)
-                    println("✅ AndroidAutoModule: Media library initialized")
+                    println("✅ AndroidAutoTurboModule: Media library initialized")
                 } else {
                     promise.reject("PARSE_ERROR", "Failed to parse media library JSON")
                 }
             } catch (e: Exception) {
-                println("❌ AndroidAutoModule: Failed to initialize media library - ${e.message}")
+                println("❌ AndroidAutoTurboModule: Failed to initialize media library - ${e.message}")
                 promise.reject("INIT_ERROR", "Failed to initialize media library", e)
             }
         }
@@ -99,20 +104,19 @@ class AndroidAutoModule(reactContext: ReactApplicationContext) : ReactContextBas
     /**
      * Update the media library with new content
      */
-    @ReactMethod
-    fun updateMediaLibrary(mediaLibraryJson: String, promise: Promise) {
+    override fun updateMediaLibrary(mediaLibraryJson: String, promise: Promise) {
         serviceScope.launch {
             try {
                 val mediaLibrary = MediaLibraryParser.parseFromJson(mediaLibraryJson)
                 if (mediaLibrary != null) {
                     mediaService?.updateMediaLibrary(mediaLibrary)
                     promise.resolve(true)
-                    println("✅ AndroidAutoModule: Media library updated")
+                    println("✅ AndroidAutoTurboModule: Media library updated")
                 } else {
                     promise.reject("PARSE_ERROR", "Failed to parse media library JSON")
                 }
             } catch (e: Exception) {
-                println("❌ AndroidAutoModule: Failed to update media library - ${e.message}")
+                println("❌ AndroidAutoTurboModule: Failed to update media library - ${e.message}")
                 promise.reject("UPDATE_ERROR", "Failed to update media library", e)
             }
         }
@@ -121,32 +125,44 @@ class AndroidAutoModule(reactContext: ReactApplicationContext) : ReactContextBas
     /**
      * Set the layout type for the media browser
      */
-    @ReactMethod
-    fun setLayoutType(layoutType: String, promise: Promise) {
+    override fun setLayoutType(layoutType: String, promise: Promise) {
         try {
             mediaService?.setLayoutType(layoutType)
             promise.resolve(true)
-            println("✅ AndroidAutoModule: Layout type set to $layoutType")
+            println("✅ AndroidAutoTurboModule: Layout type set to $layoutType")
         } catch (e: Exception) {
-            println("❌ AndroidAutoModule: Failed to set layout type - ${e.message}")
+            println("❌ AndroidAutoTurboModule: Failed to set layout type - ${e.message}")
             promise.reject("LAYOUT_ERROR", "Failed to set layout type", e)
+        }
+    }
+
+    /**
+     * Force refresh the Android Auto UI
+     */
+    override fun refreshAndroidAutoUI(promise: Promise) {
+        try {
+            mediaService?.refreshAndroidAutoUI()
+            promise.resolve(true)
+            println("✅ AndroidAutoTurboModule: Android Auto UI refreshed")
+        } catch (e: Exception) {
+            println("❌ AndroidAutoTurboModule: Failed to refresh UI - ${e.message}")
+            promise.reject("REFRESH_ERROR", "Failed to refresh Android Auto UI", e)
         }
     }
 
     /**
      * Play media by ID
      */
-    @ReactMethod
-    fun playMedia(mediaId: String, promise: Promise) {
+    override fun playMedia(mediaId: String, promise: Promise) {
         try {
             val success = mediaService?.playMedia(mediaId) ?: false
             promise.resolve(success)
             if (success) {
-                println("▶️ AndroidAutoModule: Playing media $mediaId")
+                println("▶️ AndroidAutoTurboModule: Playing media $mediaId")
                 sendEvent("playbackStateChanged", createPlaybackStateMap("playing", mediaId))
             }
         } catch (e: Exception) {
-            println("❌ AndroidAutoModule: Failed to play media - ${e.message}")
+            println("❌ AndroidAutoTurboModule: Failed to play media - ${e.message}")
             promise.reject("PLAY_ERROR", "Failed to play media", e)
         }
     }
@@ -154,17 +170,16 @@ class AndroidAutoModule(reactContext: ReactApplicationContext) : ReactContextBas
     /**
      * Pause current playback
      */
-    @ReactMethod
-    fun pause(promise: Promise) {
+    override fun pause(promise: Promise) {
         try {
             val success = mediaService?.pause() ?: false
             promise.resolve(success)
             if (success) {
-                println("⏸️ AndroidAutoModule: Playback paused")
+                println("⏸️ AndroidAutoTurboModule: Playback paused")
                 sendEvent("playbackStateChanged", createPlaybackStateMap("paused"))
             }
         } catch (e: Exception) {
-            println("❌ AndroidAutoModule: Failed to pause - ${e.message}")
+            println("❌ AndroidAutoTurboModule: Failed to pause - ${e.message}")
             promise.reject("PAUSE_ERROR", "Failed to pause playback", e)
         }
     }
@@ -172,17 +187,16 @@ class AndroidAutoModule(reactContext: ReactApplicationContext) : ReactContextBas
     /**
      * Resume current playback
      */
-    @ReactMethod
-    fun resume(promise: Promise) {
+    override fun resume(promise: Promise) {
         try {
             val success = mediaService?.resume() ?: false
             promise.resolve(success)
             if (success) {
-                println("▶️ AndroidAutoModule: Playback resumed")
+                println("▶️ AndroidAutoTurboModule: Playback resumed")
                 sendEvent("playbackStateChanged", createPlaybackStateMap("playing"))
             }
         } catch (e: Exception) {
-            println("❌ AndroidAutoModule: Failed to resume - ${e.message}")
+            println("❌ AndroidAutoTurboModule: Failed to resume - ${e.message}")
             promise.reject("RESUME_ERROR", "Failed to resume playback", e)
         }
     }
@@ -190,17 +204,16 @@ class AndroidAutoModule(reactContext: ReactApplicationContext) : ReactContextBas
     /**
      * Stop current playback
      */
-    @ReactMethod
-    fun stop(promise: Promise) {
+    override fun stop(promise: Promise) {
         try {
             val success = mediaService?.stop() ?: false
             promise.resolve(success)
             if (success) {
-                println("⏹️ AndroidAutoModule: Playback stopped")
+                println("⏹️ AndroidAutoTurboModule: Playback stopped")
                 sendEvent("playbackStateChanged", createPlaybackStateMap("stopped"))
             }
         } catch (e: Exception) {
-            println("❌ AndroidAutoModule: Failed to stop - ${e.message}")
+            println("❌ AndroidAutoTurboModule: Failed to stop - ${e.message}")
             promise.reject("STOP_ERROR", "Failed to stop playback", e)
         }
     }
@@ -208,17 +221,16 @@ class AndroidAutoModule(reactContext: ReactApplicationContext) : ReactContextBas
     /**
      * Seek to a specific position
      */
-    @ReactMethod
-    fun seekTo(positionMs: Double, promise: Promise) {
+    override fun seekTo(positionMs: Double, promise: Promise) {
         try {
             val success = mediaService?.seekTo(positionMs.toLong()) ?: false
             promise.resolve(success)
             if (success) {
-                println("⏩ AndroidAutoModule: Seeked to ${positionMs}ms")
+                println("⏩ AndroidAutoTurboModule: Seeked to ${positionMs}ms")
                 sendEvent("positionChanged", createPositionMap(positionMs.toLong()))
             }
         } catch (e: Exception) {
-            println("❌ AndroidAutoModule: Failed to seek - ${e.message}")
+            println("❌ AndroidAutoTurboModule: Failed to seek - ${e.message}")
             promise.reject("SEEK_ERROR", "Failed to seek", e)
         }
     }
@@ -226,8 +238,7 @@ class AndroidAutoModule(reactContext: ReactApplicationContext) : ReactContextBas
     /**
      * Get current playback state
      */
-    @ReactMethod
-    fun getPlaybackState(promise: Promise) {
+    override fun getPlaybackState(promise: Promise) {
         try {
             val playbackInfo = mediaService?.getPlaybackInfo()
             if (playbackInfo != null) {
@@ -245,7 +256,7 @@ class AndroidAutoModule(reactContext: ReactApplicationContext) : ReactContextBas
                 promise.resolve(null)
             }
         } catch (e: Exception) {
-            println("❌ AndroidAutoModule: Failed to get playback state - ${e.message}")
+            println("❌ AndroidAutoTurboModule: Failed to get playback state - ${e.message}")
             promise.reject("STATE_ERROR", "Failed to get playback state", e)
         }
     }
@@ -253,16 +264,15 @@ class AndroidAutoModule(reactContext: ReactApplicationContext) : ReactContextBas
     /**
      * Set playback speed
      */
-    @ReactMethod
-    fun setPlaybackSpeed(speed: Double, promise: Promise) {
+    override fun setPlaybackSpeed(speed: Double, promise: Promise) {
         try {
             val success = mediaService?.setPlaybackSpeed(speed.toFloat()) ?: false
             promise.resolve(success)
             if (success) {
-                println("🏃 AndroidAutoModule: Playback speed set to ${speed}x")
+                println("🏃 AndroidAutoTurboModule: Playback speed set to ${speed}x")
             }
         } catch (e: Exception) {
-            println("❌ AndroidAutoModule: Failed to set playback speed - ${e.message}")
+            println("❌ AndroidAutoTurboModule: Failed to set playback speed - ${e.message}")
             promise.reject("SPEED_ERROR", "Failed to set playback speed", e)
         }
     }
@@ -276,7 +286,7 @@ class AndroidAutoModule(reactContext: ReactApplicationContext) : ReactContextBas
                 .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java)
                 .emit(eventName, params)
         } catch (e: Exception) {
-            println("❌ AndroidAutoModule: Failed to send event $eventName - ${e.message}")
+            println("❌ AndroidAutoTurboModule: Failed to send event $eventName - ${e.message}")
         }
     }
 

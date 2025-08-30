@@ -49,6 +49,9 @@ export interface MediaItem {
   /** Child items for browsable folders */
   children?: MediaItem[];
 
+  /** Layout type for folder items (overrides library default) */
+  layoutType?: LayoutType;
+
   /** Custom metadata */
   metadata?: Record<string, any>;
 }
@@ -57,7 +60,7 @@ export interface MediaItem {
  * Media library structure for Android Auto
  */
 export interface MediaLibrary {
-  /** Layout type for the media browser */
+  /** Layout type for the media browser (applies to all folders) */
   layoutType: LayoutType;
 
   /** Root level media items */
@@ -77,8 +80,8 @@ export interface PlaybackInfo {
   /** Current playback state */
   state: PlaybackState;
 
-  /** Currently playing media item */
-  currentMedia?: MediaItem;
+  /** Currently playing media ID */
+  currentMediaId?: string;
 
   /** Current position in milliseconds */
   positionMs: number;
@@ -133,6 +136,11 @@ export interface AndroidAutoMediaPlayer {
    * Set the layout type for the media browser
    */
   setLayoutType(layoutType: LayoutType): Promise<boolean>;
+
+  /**
+   * Force refresh the Android Auto UI
+   */
+  refreshAndroidAutoUI(): Promise<boolean>;
 
   /**
    * Play media by ID

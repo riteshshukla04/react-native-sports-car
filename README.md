@@ -23,7 +23,24 @@ npm install react-native-sports-car
 yarn add react-native-sports-car
 ```
 
-### Android Setup
+## Requirements
+
+This library requires React Native's **New Architecture** (TurboModules). Make sure to enable it in your app:
+
+**Android** - Add to `android/gradle.properties`:
+```properties
+newArchEnabled=true
+```
+
+**iOS** - Add to `ios/Podfile`:
+```ruby
+use_react_native!(
+  :path => config[:reactNativePath],
+  :new_architecture_enabled => true
+)
+```
+
+## Android Setup
 
 #### 1. Update your `android/build.gradle` (project level)
 

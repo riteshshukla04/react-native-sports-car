@@ -24,7 +24,7 @@ const AndroidAutoExample: React.FC = () => {
   // Sample media library with songs and videos
   const sampleMediaLibrary: MediaLibrary = useMemo(
     () => ({
-      layoutType: 'grid',
+      layoutType: 'list', // Default layout (can be overridden per folder)
       appName: 'My Music App',
       rootItems: [
         {
@@ -35,6 +35,7 @@ const AndroidAutoExample: React.FC = () => {
             'https://plus.unsplash.com/premium_photo-1664474619075-644dd191935f?q=80&w=1738&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
           isPlayable: false,
           mediaType: 'folder',
+          layoutType: 'grid', // Explicitly set music to grid to test
           children: [
             {
               id: 'album_1',
@@ -87,15 +88,17 @@ const AndroidAutoExample: React.FC = () => {
         {
           id: 'videos_folder',
           title: 'Videos',
-          subtitle: 'Browse your video collection',
+
+          subtitle: 'Browse your video collections',
           iconUrl:
             'https://plus.unsplash.com/premium_photo-1664474619075-644dd191935f?q=80&w=1738&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
           isPlayable: false,
           mediaType: 'folder',
+          layoutType: 'list',
           children: [
             {
               id: 'video_1',
-              title: 'Sample Video 1',
+              title: 'Sample Video 3',
               subtitle: 'Demo Video',
               iconUrl:
                 'https://plus.unsplash.com/premium_photo-1664474619075-644dd191935f?q=80&w=1738&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
@@ -119,6 +122,7 @@ const AndroidAutoExample: React.FC = () => {
             'https://plus.unsplash.com/premium_photo-1664474619075-644dd191935f?q=80&w=1738&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
           isPlayable: false,
           mediaType: 'folder',
+          layoutType: 'list', // Playlists will be displayed as a grid
           children: [
             {
               id: 'playlist_1',
@@ -294,6 +298,17 @@ const AndroidAutoExample: React.FC = () => {
     }
   };
 
+  const handleRefreshUI = async () => {
+    try {
+      await AndroidAuto.updateMediaLibrary(sampleMediaLibrary);
+      console.log('🔄 Android Auto UI refreshed');
+      Alert.alert('Success', 'Android Auto UI refreshed!');
+    } catch (error) {
+      console.error('Failed to refresh Android Auto UI:', error);
+      Alert.alert('Error', 'Failed to refresh Android Auto UI');
+    }
+  };
+
   const handleUpdateLibrary = async () => {
     try {
       // Add a new song to demonstrate library updates
@@ -393,6 +408,11 @@ const AndroidAutoExample: React.FC = () => {
           onPress={() => handleSetLayoutType('list')}
         >
           <Text style={styles.buttonText}>List Layout</Text>
+        </TouchableOpacity>
+      </View>
+      <View style={styles.buttonRow}>
+        <TouchableOpacity style={styles.button} onPress={handleRefreshUI}>
+          <Text style={styles.buttonText}>🔄 Refresh UI</Text>
         </TouchableOpacity>
       </View>
     </View>

@@ -1,16 +1,21 @@
 package com.sportscar
 
-import com.facebook.react.BaseReactPackage
+import com.facebook.react.TurboReactPackage
 import com.facebook.react.bridge.NativeModule
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.module.model.ReactModuleInfo
 import com.facebook.react.module.model.ReactModuleInfoProvider
 import java.util.HashMap
 
-class SportscarPackage : BaseReactPackage() {
+/**
+ * TurboReactPackage for React Native's New Architecture
+ * This library only supports the New Architecture (TurboModules)
+ */
+class SportscarPackage : TurboReactPackage() {
+  
   override fun getModule(name: String, reactContext: ReactApplicationContext): NativeModule? {
     return when (name) {
-      AndroidAutoModule.NAME -> AndroidAutoModule(reactContext)
+      AndroidAutoTurboModule.NAME -> AndroidAutoTurboModule(reactContext)
       else -> null
     }
   }
@@ -19,14 +24,14 @@ class SportscarPackage : BaseReactPackage() {
     return ReactModuleInfoProvider {
       val moduleInfos: MutableMap<String, ReactModuleInfo> = HashMap()
       
-      // AndroidAutoModule
-      moduleInfos[AndroidAutoModule.NAME] = ReactModuleInfo(
-        AndroidAutoModule.NAME,
-        AndroidAutoModule.NAME,
+      // AndroidAutoModule as TurboModule
+      moduleInfos[AndroidAutoTurboModule.NAME] = ReactModuleInfo(
+        AndroidAutoTurboModule.NAME,
+        AndroidAutoTurboModule.NAME,
         false,  // canOverrideExistingModule
         false,  // needsEagerInit
         false,  // isCxxModule
-        false // isTurboModule
+        true    // isTurboModule
       )
       
       moduleInfos
