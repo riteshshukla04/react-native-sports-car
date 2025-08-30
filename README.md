@@ -4,7 +4,7 @@ A React Native module for Android Auto integration with customizable media playe
 
 ## Features
 
-- 🎵 **Audio & Video Support**: Play songs and videos through Android Auto
+- 🎵 **Audio & Video Support**: Play songs and videos through Android Auto (⚠️ Video support is experimental)
 - 🎨 **Fully Customizable UI**: Configure layouts and media items from TypeScript
 - 🚗 **Android Auto Integration**: Native `MediaBrowserServiceCompat` implementation
 - ⚡ **Real-time Controls**: Play, pause, seek, speed control, and more
@@ -12,6 +12,8 @@ A React Native module for Android Auto integration with customizable media playe
 - 🖼️ **Image Caching**: Efficient artwork loading with Glide integration
 
 > **⚠️ Important**: Video content only plays in **parked mode** due to **Android Auto platform restrictions**, not module limitations. While driving, only audio from videos will play.
+> 
+> **🧪 Experimental**: Video support is currently experimental and may have limitations or issues. Audio playback is fully stable and recommended for production use.
 
 ## Installation
 
@@ -296,11 +298,15 @@ interface PlaybackInfo {
 ## Video Playback Notes
 
 > **🚨 Critical**: Video content **ONLY** plays in parked mode due to **Android Auto platform safety restrictions**.
+> 
+> **🧪 Experimental Feature**: Video support is currently experimental and may not work reliably in all scenarios.
 
 - **While Driving**: Only audio from video files will play (video shows as audio track)
 - **Parked Mode**: Full video playback with visual content available
 - **Platform Limitation**: This is enforced by Android Auto itself, **NOT** by this module
 - **Universal Behavior**: All Android Auto media apps have this same restriction
+- **Experimental Status**: Video functionality may have bugs, performance issues, or compatibility problems
+- **Production Recommendation**: Use audio-only content for production apps until video support stabilizes
 - **Metadata**: Video files show enhanced metadata in Android Auto interface
 - **Format Support**: Supports standard video formats (MP4, WebM, etc.)
 
@@ -339,12 +345,21 @@ adb shell settings put global android_auto_parked 1
    - Only audio will play from video files for safety reasons
    - Enable parked mode for testing: `adb shell settings put global android_auto_parked 1`
 
-4. **Playback Issues**:
+4. **Video Issues (Experimental Feature)**:
+   - **Current Limitation**: Video currently only plays audio due to MediaBrowserService constraints
+   - Video support is experimental and may have various issues
+   - **Technical Issue**: MediaBrowserServiceCompat doesn't provide video rendering surface
+   - **Workaround**: Consider using Android Auto Car App Library for full video support
+   - Try using audio-only content if experiencing problems
+   - Check Android Auto logs for video-specific errors
+   - Consider video as a beta feature not ready for production
+
+5. **Playback Issues**:
    - Ensure media URLs are accessible
    - Check network permissions
    - Verify audio focus is properly handled
 
-5. **Android Auto Not Detecting**:
+6. **Android Auto Not Detecting**:
    - Confirm minSdkVersion >= 29
    - Verify all required permissions are added
    - Check automotive app descriptor
