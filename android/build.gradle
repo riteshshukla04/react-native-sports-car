@@ -78,7 +78,6 @@ dependencies {
   // Android Auto and Media dependencies
   implementation "androidx.media:media:1.7.0"
   implementation "androidx.car.app:app:1.4.0"
-  implementation "androidx.car.app:app-automotive:1.4.0"
   
   // ExoPlayer for media playback
   implementation 'com.google.android.exoplayer:exoplayer:2.19.1'

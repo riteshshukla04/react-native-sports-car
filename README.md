@@ -58,7 +58,8 @@ buildscript {
 #### 2. Add to your `android/app/src/main/AndroidManifest.xml`
 
 ```xml
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
     
     <!-- Required Permissions -->
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
@@ -86,6 +87,12 @@ buildscript {
         <meta-data
             android:name="com.google.android.gms.car.application"
             android:resource="@xml/automotive_app_desc" />
+            
+        <!-- Handle potential conflicts with other AndroidX Car App dependencies -->
+        <meta-data
+            android:name="androidx.car.app.CarAppMetadataHolderService.CAR_HARDWARE_MANAGER"
+            android:value="androidx.car.app.hardware.ProjectedCarHardwareManager"
+            tools:replace="android:value" />
     </application>
 </manifest>
 ```
@@ -394,16 +401,27 @@ adb shell settings put global android_auto_parked 1
    cd .. && npx react-native run-android
    ```
 
-2. **Service Not Found**:
+2. **AndroidX Car App Dependency Conflicts**:
+   ```
+   Error: Attribute meta-data#androidx.car.app.CarAppMetadataHolderService.CAR_HARDWARE_MANAGER@value 
+   is also present at [androidx.car.app:app-automotive:1.4.0]
+   ```
+   **Solution**: 
+   - Add `xmlns:tools="http://schemas.android.com/tools"` to your manifest
+   - Add the meta-data element with `tools:replace="android:value"` as shown in step 2 above
+   - If you have `androidx.car.app:app-automotive` in your dependencies, consider removing it if not needed
+   - **📖 Detailed Guide**: See [ANDROID_CONFLICT_RESOLUTION.md](./ANDROID_CONFLICT_RESOLUTION.md) for comprehensive solutions
+
+3. **Service Not Found**:
    - Verify service name in AndroidManifest.xml matches exactly
    - Check that automotive_app_desc.xml exists
 
-3. **Video Not Playing While Driving**:
+4. **Video Not Playing While Driving**:
    - **This is normal behavior** - Android Auto restricts video playback while driving
    - Only audio will play from video files for safety reasons
    - Enable parked mode for testing: `adb shell settings put global android_auto_parked 1`
 
-4. **Video Issues (Experimental Feature)**:
+5. **Video Issues (Experimental Feature)**:
    - **Current Limitation**: Video currently only plays audio due to MediaBrowserService constraints
    - Video support is experimental and may have various issues
    - **Technical Issue**: MediaBrowserServiceCompat doesn't provide video rendering surface
@@ -412,12 +430,12 @@ adb shell settings put global android_auto_parked 1
    - Check Android Auto logs for video-specific errors
    - Consider video as a beta feature not ready for production
 
-5. **Playback Issues**:
+6. **Playback Issues**:
    - Ensure media URLs are accessible
    - Check network permissions
    - Verify audio focus is properly handled
 
-6. **Android Auto Not Detecting**:
+7. **Android Auto Not Detecting**:
    - Confirm minSdkVersion >= 29
    - Verify all required permissions are added
    - Check automotive app descriptor
