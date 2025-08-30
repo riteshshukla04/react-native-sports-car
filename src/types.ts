@@ -234,6 +234,11 @@ export interface AndroidAutoMediaPlayer {
    * Remove all event listeners
    */
   removeAllListeners(eventType?: MediaPlayerEventType): void;
+
+  /**
+   * Emit an event (for testing purposes)
+   */
+  emit(eventType: MediaPlayerEventType, data?: any): void;
 }
 
 /**
