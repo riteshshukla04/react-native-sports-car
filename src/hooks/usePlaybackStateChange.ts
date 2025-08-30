@@ -4,7 +4,7 @@ import type { PlaybackInfo, MediaPlayerEvent } from '../types';
 
 /**
  * Simple hook for tracking Android Auto playback state
- * 
+ *
  * @param options - Configuration options for the hook
  * @returns Object containing current playback state
  */
@@ -17,10 +17,7 @@ export const usePlaybackStateChange = (options?: {
   const [playbackInfo, setPlaybackInfo] = useState<PlaybackInfo | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  const {
-    fetchInitialState = true,
-    onStateChange,
-  } = options || {};
+  const { fetchInitialState = true, onStateChange } = options || {};
 
   /**
    * Fetch current playback state from Android Auto
@@ -43,12 +40,15 @@ export const usePlaybackStateChange = (options?: {
   /**
    * Handle playback state change events
    */
-  const handlePlaybackStateChange = useCallback((event: MediaPlayerEvent) => {
-    if (event.data) {
-      setPlaybackInfo(event.data);
-      onStateChange?.(event.data);
-    }
-  }, [onStateChange]);
+  const handlePlaybackStateChange = useCallback(
+    (event: MediaPlayerEvent) => {
+      if (event.data) {
+        setPlaybackInfo(event.data);
+        onStateChange?.(event.data);
+      }
+    },
+    [onStateChange]
+  );
 
   // Set up event listeners
   useEffect(() => {
@@ -70,7 +70,7 @@ export const usePlaybackStateChange = (options?: {
 
     // Cleanup function
     return () => {
-      subscriptions.forEach(subscription => {
+      subscriptions.forEach((subscription) => {
         try {
           subscription.remove();
         } catch (err) {
@@ -84,14 +84,14 @@ export const usePlaybackStateChange = (options?: {
     // Current playback state
     playbackInfo,
     isLoading,
-    
+
     // Simple state flags
     isPlaying: playbackInfo?.state === 'playing',
     isStopped: playbackInfo?.state === 'stopped',
     isBuffering: playbackInfo?.state === 'buffering',
-    
+
     // Refresh function
-    refresh: fetchPlaybackState
+    refresh: fetchPlaybackState,
   };
 };
 

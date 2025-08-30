@@ -6,12 +6,13 @@ import { usePlaybackStateChange } from 'react-native-sportscar';
  * Simple example showing basic playback state tracking
  */
 const SimplePlaybackStateExample: React.FC = () => {
-  const { playbackInfo, isLoading, isPlaying, isStopped, isBuffering } = usePlaybackStateChange({
-    fetchInitialState: true,
-    onStateChange: (info) => {
-      console.log('🎵 Playback state changed:', info.state);
-    },
-  });
+  const { playbackInfo, isLoading, isPlaying, isStopped, isBuffering } =
+    usePlaybackStateChange({
+      fetchInitialState: true,
+      onStateChange: (info) => {
+        console.log('🎵 Playback state changed:', info.state);
+      },
+    });
 
   const getStatusEmoji = () => {
     if (isLoading) return '🔄';
@@ -32,7 +33,7 @@ const SimplePlaybackStateExample: React.FC = () => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Playback State</Text>
-      
+
       <View style={styles.statusContainer}>
         <Text style={styles.statusEmoji}>{getStatusEmoji()}</Text>
         <Text style={styles.statusText}>{getStatusText()}</Text>
