@@ -3,7 +3,12 @@ import type { HybridObject } from 'react-native-nitro-modules';
 // Types for Android Auto functionality
 export type LayoutType = 'grid' | 'list';
 export type MediaType = 'audio' | 'video' | 'folder';
-export type PlaybackState = 'playing' | 'paused' | 'stopped' | 'buffering' | 'error';
+export type PlaybackState =
+  | 'playing'
+  | 'paused'
+  | 'stopped'
+  | 'buffering'
+  | 'error';
 export type AppState = 'foreground' | 'background' | 'destroyed';
 export type RepeatMode = 'none' | 'one' | 'all';
 
@@ -47,13 +52,13 @@ export interface Sportscar
   extends HybridObject<{ ios: 'swift'; android: 'kotlin' }> {
   // Basic functionality
   multiply(a: number, b: number): number;
-  
+
   // Android Auto Media Library Management
   initializeMediaLibrary(mediaLibraryJson: string): Promise<boolean>;
   updateMediaLibrary(mediaLibraryJson: string): Promise<boolean>;
   setLayoutType(layoutType: string): Promise<boolean>;
   refreshAndroidAutoUI(): Promise<boolean>;
-  
+
   // Media Playback Control
   playMedia(mediaId: string): Promise<boolean>;
   pause(): Promise<boolean>;
@@ -61,12 +66,12 @@ export interface Sportscar
   stop(): Promise<boolean>;
   seekTo(positionMs: number): Promise<boolean>;
   setPlaybackSpeed(speed: number): Promise<boolean>;
-  
+
   // Playback State Management
   getPlaybackState(): Promise<PlaybackInfo>;
   isCurrentlyPlaying(): Promise<boolean>;
   getLastPlayedMediaInfo(): Promise<LastPlayedMediaInfo | null>;
-  
+
   // App Lifecycle Management
   handleAppStateChange(appState: string): Promise<boolean>;
   getCurrentAppState(): Promise<AppState>;

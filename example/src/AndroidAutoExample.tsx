@@ -1,9 +1,4 @@
-import React, {
-  useEffect,
-  useState,
-  useCallback,
-  useMemo,
-} from 'react';
+import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import {
   View,
   Text,
@@ -180,7 +175,7 @@ const AndroidAutoExample: React.FC = () => {
     // Set up callbacks for media player events
     AndroidAuto.setMediaPlayerEventCallback((event) => {
       console.log('🎶 Media player event:', event.type, event.data);
-      
+
       switch (event.type) {
         case 'playbackStateChanged':
           updatePlaybackInfo();

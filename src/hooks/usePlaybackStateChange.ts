@@ -67,7 +67,7 @@ export const usePlaybackStateChange = (options?: {
   useEffect(() => {
     // Set up playback state callback
     AndroidAuto.setPlaybackStateCallback(handlePlaybackStateChange);
-    
+
     // Set up media player event callback
     AndroidAuto.setMediaPlayerEventCallback(handleMediaPlayerEvent);
 
@@ -84,7 +84,12 @@ export const usePlaybackStateChange = (options?: {
       AndroidAuto.setPlaybackStateCallback(null);
       AndroidAuto.setMediaPlayerEventCallback(null);
     };
-  }, [fetchInitialState, fetchPlaybackState, handlePlaybackStateChange, handleMediaPlayerEvent]);
+  }, [
+    fetchInitialState,
+    fetchPlaybackState,
+    handlePlaybackStateChange,
+    handleMediaPlayerEvent,
+  ]);
 
   return {
     // Current playback state

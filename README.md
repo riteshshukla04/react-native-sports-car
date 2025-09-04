@@ -13,7 +13,7 @@ A React Native module for Android Auto integration with customizable media playe
 - 🚀 **Nitro Modules**: Built with the latest React Native architecture for better performance
 
 > **⚠️ Important**: Video content only plays in **parked mode** due to **Android Auto platform restrictions**, not module limitations. While driving, only audio from videos will play.
-> 
+>
 > **🧪 Experimental**: Video support is currently experimental and may have limitations or issues. Audio playback is fully stable and recommended for production use.
 
 ## Installation
@@ -25,8 +25,8 @@ npm install react-native-sportscar react-native-nitro-modules
 yarn add react-native-sportscar react-native-nitro-modules
 ```
 
-
 **Dependencies**:
+
 - React Native >= 0.60
 - Android minSdkVersion >= 29
 - Android Auto compatible device or DHU
@@ -50,14 +50,14 @@ buildscript {
 ```xml
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
-    
+
     <!-- Required Permissions -->
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    
+
     <!-- Android Auto Features -->
     <uses-feature android:name="android.hardware.screen.landscape" />
     <uses-feature android:name="android.software.leanback" />
@@ -77,7 +77,7 @@ buildscript {
         <meta-data
             android:name="com.google.android.gms.car.application"
             android:resource="@xml/automotive_app_desc" />
-            
+
         <!-- Handle potential conflicts with other AndroidX Car App dependencies -->
         <meta-data
             android:name="androidx.car.app.CarAppMetadataHolderService.CAR_HARDWARE_MANAGER"
@@ -136,13 +136,14 @@ const MyComponent = () => {
 };
 ```
 
-
-
 ### Basic Setup
 
 ```typescript
 import AndroidAuto from 'react-native-sports-car';
-import type { MediaLibrary, AndroidAutoMediaItem } from 'react-native-sports-car';
+import type {
+  MediaLibrary,
+  AndroidAutoMediaItem,
+} from 'react-native-sports-car';
 
 // Define your media library
 const mediaLibrary: MediaLibrary = {
@@ -158,7 +159,7 @@ const mediaLibrary: MediaLibrary = {
       mediaUrl: 'https://example.com/bohemian-rhapsody.mp3',
       artworkUrl: 'https://example.com/queen-album-art.jpg',
       genre: 'Rock',
-      year: 1975
+      year: 1975,
     },
     {
       id: 'video1',
@@ -167,9 +168,9 @@ const mediaLibrary: MediaLibrary = {
       duration: 240000,
       mediaType: 'VIDEO',
       mediaUrl: 'https://example.com/music-video.mp4',
-      artworkUrl: 'https://example.com/video-thumbnail.jpg'
-    }
-  ]
+      artworkUrl: 'https://example.com/video-thumbnail.jpg',
+    },
+  ],
 };
 
 // Initialize the media library
@@ -243,7 +244,7 @@ useEffect(() => {
 // Update media library with new content
 const updatedLibrary: MediaLibrary = {
   layoutType: 'LIST',
-  items: [...existingItems, ...newItems]
+  items: [...existingItems, ...newItems],
 };
 
 await AndroidAuto.updateMediaLibrary(JSON.stringify(updatedLibrary));
@@ -255,13 +256,13 @@ await AndroidAuto.updateMediaLibrary(JSON.stringify(updatedLibrary));
 // Grid layout (default)
 const gridLibrary: MediaLibrary = {
   layoutType: 'GRID',
-  items: mediaItems
+  items: mediaItems,
 };
 
 // List layout
 const listLibrary: MediaLibrary = {
-  layoutType: 'LIST', 
-  items: mediaItems
+  layoutType: 'LIST',
+  items: mediaItems,
 };
 
 // Set layout type separately
@@ -272,40 +273,40 @@ await AndroidAuto.setLayoutType('GRID');
 
 ### Methods
 
-| Method | Parameters | Return Type | Description |
-|--------|------------|-------------|-------------|
-| `initializeMediaLibrary` | `jsonString: string` | `Promise<boolean>` | Initialize media library |
-| `playMedia` | `mediaId: string` | `Promise<boolean>` | Play specific media item |
-| `pause` | - | `Promise<boolean>` | Pause playback |
-| `resume` | - | `Promise<boolean>` | Resume playback |
-| `stop` | - | `Promise<boolean>` | Stop playback |
-| `seekTo` | `positionMs: number` | `Promise<boolean>` | Seek to position |
-| `setPlaybackSpeed` | `speed: number` | `Promise<boolean>` | Set playback speed |
-| `getPlaybackState` | - | `Promise<PlaybackInfo>` | Get current state |
-| `setLayoutType` | `layoutType: string` | `Promise<boolean>` | Set UI layout |
-| `updateMediaLibrary` | `jsonString: string` | `Promise<boolean>` | Update media library |
-| `refreshAndroidAutoUI` | - | `Promise<boolean>` | Refresh Android Auto UI |
-| `isCurrentlyPlaying` | - | `Promise<boolean>` | Check if currently playing |
-| `getLastPlayedMediaInfo` | - | `Promise<LastPlayedMediaInfo \| null>` | Get last played media info |
-| `handleAppStateChange` | `appState: string` | `Promise<boolean>` | Handle app state change |
-| `getCurrentAppState` | - | `Promise<AppState>` | Get current app state |
-| `setPlaybackStateCallback` | `callback: PlaybackStateCallback \| null` | `void` | Set playback state callback |
-| `setMediaPlayerEventCallback` | `callback: MediaPlayerEventCallback \| null` | `void` | Set media player event callback |
+| Method                        | Parameters                                   | Return Type                            | Description                     |
+| ----------------------------- | -------------------------------------------- | -------------------------------------- | ------------------------------- |
+| `initializeMediaLibrary`      | `jsonString: string`                         | `Promise<boolean>`                     | Initialize media library        |
+| `playMedia`                   | `mediaId: string`                            | `Promise<boolean>`                     | Play specific media item        |
+| `pause`                       | -                                            | `Promise<boolean>`                     | Pause playback                  |
+| `resume`                      | -                                            | `Promise<boolean>`                     | Resume playback                 |
+| `stop`                        | -                                            | `Promise<boolean>`                     | Stop playback                   |
+| `seekTo`                      | `positionMs: number`                         | `Promise<boolean>`                     | Seek to position                |
+| `setPlaybackSpeed`            | `speed: number`                              | `Promise<boolean>`                     | Set playback speed              |
+| `getPlaybackState`            | -                                            | `Promise<PlaybackInfo>`                | Get current state               |
+| `setLayoutType`               | `layoutType: string`                         | `Promise<boolean>`                     | Set UI layout                   |
+| `updateMediaLibrary`          | `jsonString: string`                         | `Promise<boolean>`                     | Update media library            |
+| `refreshAndroidAutoUI`        | -                                            | `Promise<boolean>`                     | Refresh Android Auto UI         |
+| `isCurrentlyPlaying`          | -                                            | `Promise<boolean>`                     | Check if currently playing      |
+| `getLastPlayedMediaInfo`      | -                                            | `Promise<LastPlayedMediaInfo \| null>` | Get last played media info      |
+| `handleAppStateChange`        | `appState: string`                           | `Promise<boolean>`                     | Handle app state change         |
+| `getCurrentAppState`          | -                                            | `Promise<AppState>`                    | Get current app state           |
+| `setPlaybackStateCallback`    | `callback: PlaybackStateCallback \| null`    | `void`                                 | Set playback state callback     |
+| `setMediaPlayerEventCallback` | `callback: MediaPlayerEventCallback \| null` | `void`                                 | Set media player event callback |
 
 ### Callbacks (Nitro Modules)
 
-| Callback | Parameters | Description |
-|----------|------------|-------------|
-| `PlaybackStateCallback` | `(playbackInfo: PlaybackInfo) => void` | Called when playback state changes |
-| `MediaPlayerEventCallback` | `(eventType: MediaPlayerEventType, data?: any) => void` | Called for media player events |
+| Callback                   | Parameters                                              | Description                        |
+| -------------------------- | ------------------------------------------------------- | ---------------------------------- |
+| `PlaybackStateCallback`    | `(playbackInfo: PlaybackInfo) => void`                  | Called when playback state changes |
+| `MediaPlayerEventCallback` | `(eventType: MediaPlayerEventType, data?: any) => void` | Called for media player events     |
 
 ### Event Types
 
-| Event Type | Description |
-|------------|-------------|
+| Event Type             | Description            |
+| ---------------------- | ---------------------- |
 | `playbackStateChanged` | Playback state updated |
-| `mediaItemChanged` | Media item changed |
-| `error` | Error occurred |
+| `mediaItemChanged`     | Media item changed     |
+| `error`                | Error occurred         |
 
 ### Types
 
@@ -313,7 +314,12 @@ await AndroidAuto.setLayoutType('GRID');
 // Media Types
 export type LayoutType = 'grid' | 'list';
 export type MediaType = 'audio' | 'video' | 'folder';
-export type PlaybackState = 'playing' | 'paused' | 'stopped' | 'buffering' | 'error';
+export type PlaybackState =
+  | 'playing'
+  | 'paused'
+  | 'stopped'
+  | 'buffering'
+  | 'error';
 export type AppState = 'foreground' | 'background' | 'destroyed';
 export type RepeatMode = 'none' | 'one' | 'all';
 
@@ -357,8 +363,14 @@ interface LastPlayedMediaInfo {
 
 // Callback Types
 type PlaybackStateCallback = (playbackInfo: PlaybackInfo) => void;
-type MediaPlayerEventCallback = (eventType: MediaPlayerEventType, data?: any) => void;
-type MediaPlayerEventType = 'playbackStateChanged' | 'mediaItemChanged' | 'error';
+type MediaPlayerEventCallback = (
+  eventType: MediaPlayerEventType,
+  data?: any
+) => void;
+type MediaPlayerEventType =
+  | 'playbackStateChanged'
+  | 'mediaItemChanged'
+  | 'error';
 ```
 
 ## Testing with Android Auto
@@ -366,6 +378,7 @@ type MediaPlayerEventType = 'playbackStateChanged' | 'mediaItemChanged' | 'error
 ### Desktop Head Unit (DHU)
 
 1. **Install Android Auto DHU**:
+
    ```bash
    # Download from Android Developer site
    # Extract and run
@@ -397,7 +410,7 @@ type MediaPlayerEventType = 'playbackStateChanged' | 'mediaItemChanged' | 'error
 ## Video Playback Notes
 
 > **🚨 Critical**: Video content **ONLY** plays in parked mode due to **Android Auto platform safety restrictions**.
-> 
+>
 > **🧪 Experimental Feature**: Video support is currently experimental and may not work reliably in all scenarios.
 
 - **While Driving**: Only audio from video files will play (video shows as audio track)
@@ -412,6 +425,7 @@ type MediaPlayerEventType = 'playbackStateChanged' | 'mediaItemChanged' | 'error
 ### Enabling Parked Mode for Testing
 
 **Desktop Head Unit (DHU)**:
+
 ```bash
 # Method 1: DHU Settings
 # Go to Settings → Developer settings → Enable "Simulate parked mode"
@@ -421,6 +435,7 @@ adb shell settings put global android_auto_parked 1
 ```
 
 **Physical Car**:
+
 - Video will automatically play when the car is in park
 - No manual configuration needed
 
@@ -429,6 +444,7 @@ adb shell settings put global android_auto_parked 1
 ### Common Issues
 
 1. **Build Errors**:
+
    ```bash
    # Clean and rebuild
    cd android && ./gradlew clean
@@ -436,11 +452,13 @@ adb shell settings put global android_auto_parked 1
    ```
 
 2. **AndroidX Car App Dependency Conflicts**:
+
    ```
-   Error: Attribute meta-data#androidx.car.app.CarAppMetadataHolderService.CAR_HARDWARE_MANAGER@value 
+   Error: Attribute meta-data#androidx.car.app.CarAppMetadataHolderService.CAR_HARDWARE_MANAGER@value
    is also present at [androidx.car.app:app-automotive:1.4.0]
    ```
-   **Solution**: 
+
+   **Solution**:
    - Add `xmlns:tools="http://schemas.android.com/tools"` to your manifest
    - Add the meta-data element with `tools:replace="android:value"` as shown in step 2 above
    - If you have `androidx.car.app:app-automotive` in your dependencies, consider removing it if not needed
@@ -498,6 +516,7 @@ MIT License - see LICENSE file for details.
 ## Support
 
 For issues and questions:
+
 - GitHub Issues: [Create an issue](https://github.com/your-repo/react-native-sports-car/issues)
 - Documentation: [Full API docs](https://github.com/your-repo/react-native-sports-car/docs)
 

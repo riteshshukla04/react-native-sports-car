@@ -1,11 +1,11 @@
 import { Platform } from 'react-native';
 import { NitroModules } from 'react-native-nitro-modules';
 import type { Sportscar } from './Sportscar.nitro';
-import type { 
-  AndroidAutoMediaPlayer, 
+import type {
+  AndroidAutoMediaPlayer,
   PlaybackStateCallback,
   MediaPlayerEventCallback,
-  MediaPlayerEventType
+  MediaPlayerEventType,
 } from './types';
 
 const SportscarHybridObject =
@@ -38,7 +38,9 @@ const checkPlatformAndModule = (methodName: string) => {
   }
 
   if (!SportscarHybridObject) {
-    console.warn('🏎️ React Native Sportscar: SportscarHybridObject not available');
+    console.warn(
+      '🏎️ React Native Sportscar: SportscarHybridObject not available'
+    );
     return false;
   }
 
@@ -114,7 +116,9 @@ export const AndroidAuto: AndroidAutoMediaPlayer = {
       return Promise.resolve(false);
     }
 
-    return SportscarHybridObject.updateMediaLibrary(JSON.stringify(mediaLibrary));
+    return SportscarHybridObject.updateMediaLibrary(
+      JSON.stringify(mediaLibrary)
+    );
   },
 
   /**
