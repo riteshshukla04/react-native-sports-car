@@ -1,7 +1,6 @@
 import React, {
   useEffect,
   useState,
-  useRef,
   useCallback,
   useMemo,
 } from 'react';
@@ -19,7 +18,7 @@ import type { MediaLibrary, PlaybackInfo } from 'react-native-sportscar';
 const AndroidAutoExample: React.FC = () => {
   const [playbackInfo, setPlaybackInfo] = useState<PlaybackInfo | null>(null);
   const [isInitialized, setIsInitialized] = useState(false);
-  const subscriptionsRef = useRef<Array<{ remove(): void }>>([]);
+  // Note: Nitro modules use callbacks instead of subscriptions, so no need for subscriptionsRef
 
   // Sample media library with songs and videos
   const sampleMediaLibrary: MediaLibrary = useMemo(
@@ -168,51 +167,38 @@ const AndroidAutoExample: React.FC = () => {
   }, [sampleMediaLibrary]);
 
   const setupEventListeners = useCallback(() => {
-    // Clear any existing subscriptions
-    subscriptionsRef.current.forEach((subscription) => {
-      try {
-        subscription.remove();
-      } catch (error) {
-        console.warn('Error removing existing subscription:', error);
+    // Clear any existing callbacks (Nitro modules use callbacks instead of subscriptions)
+    AndroidAuto.setPlaybackStateCallback(null);
+    AndroidAuto.setMediaPlayerEventCallback(null);
+
+    // Set up callbacks for playback state changes (Nitro modules use callbacks instead of event listeners)
+    AndroidAuto.setPlaybackStateCallback((playbackInfo) => {
+      console.log('🎵 Playback state changed:', playbackInfo);
+      updatePlaybackInfo();
+    });
+
+    // Set up callbacks for media player events
+    AndroidAuto.setMediaPlayerEventCallback((event) => {
+      console.log('🎶 Media player event:', event.type, event.data);
+      
+      switch (event.type) {
+        case 'playbackStateChanged':
+          updatePlaybackInfo();
+          break;
+        case 'mediaChanged':
+          updatePlaybackInfo();
+          break;
+        case 'positionChanged':
+          console.log('⏰ Position changed:', event.data);
+          break;
+        case 'error':
+          console.error('❌ Android Auto error:', event.data);
+          Alert.alert('Playback Error', 'An error occurred during playback');
+          break;
+        default:
+          console.log('📱 Other event:', event.type, event.data);
       }
     });
-    subscriptionsRef.current = [];
-
-    // Listen for playback state changes
-    const playbackSubscription = AndroidAuto.addEventListener(
-      'playbackStateChanged',
-      (event) => {
-        console.log('🎵 Playback state changed:', event.data);
-        updatePlaybackInfo();
-      }
-    );
-    subscriptionsRef.current.push(playbackSubscription);
-
-    // Listen for media changes
-    const mediaSubscription = AndroidAuto.addEventListener(
-      'mediaChanged',
-      (event) => {
-        console.log('🎶 Media changed:', event.data);
-        updatePlaybackInfo();
-      }
-    );
-    subscriptionsRef.current.push(mediaSubscription);
-
-    // Listen for position changes
-    const positionSubscription = AndroidAuto.addEventListener(
-      'positionChanged',
-      (event) => {
-        console.log('⏰ Position changed:', event.data);
-      }
-    );
-    subscriptionsRef.current.push(positionSubscription);
-
-    // Listen for errors
-    const errorSubscription = AndroidAuto.addEventListener('error', (event) => {
-      console.error('❌ Android Auto error:', event.data);
-      Alert.alert('Playback Error', 'An error occurred during playback');
-    });
-    subscriptionsRef.current.push(errorSubscription);
   }, [updatePlaybackInfo]);
 
   useEffect(() => {
@@ -220,15 +206,9 @@ const AndroidAutoExample: React.FC = () => {
     setupEventListeners();
 
     return () => {
-      // Clean up subscriptions properly
-      subscriptionsRef.current.forEach((subscription) => {
-        try {
-          subscription.remove();
-        } catch (error) {
-          console.warn('Error removing subscription:', error);
-        }
-      });
-      subscriptionsRef.current = [];
+      // Clean up callbacks properly (Nitro modules use callbacks instead of subscriptions)
+      AndroidAuto.setPlaybackStateCallback(null);
+      AndroidAuto.setMediaPlayerEventCallback(null);
     };
   }, [initializeAndroidAuto, setupEventListeners]);
 

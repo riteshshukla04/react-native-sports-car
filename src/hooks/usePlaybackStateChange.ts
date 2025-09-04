@@ -1,9 +1,10 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useRef } from 'react';
 import { AndroidAuto } from '../index';
 import type { PlaybackInfo, MediaPlayerEvent } from '../types';
 
 /**
  * Simple hook for tracking Android Auto playback state
+ * Updated to use callbacks instead of event listeners for Nitro modules
  *
  * @param options - Configuration options for the hook
  * @returns Object containing current playback state
@@ -16,6 +17,7 @@ export const usePlaybackStateChange = (options?: {
 }) => {
   const [playbackInfo, setPlaybackInfo] = useState<PlaybackInfo | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const isInitializedRef = useRef(false);
 
   const { fetchInitialState = true, onStateChange } = options || {};
 
@@ -38,11 +40,22 @@ export const usePlaybackStateChange = (options?: {
   }, [onStateChange]);
 
   /**
-   * Handle playback state change events
+   * Handle playback state change events via callback
    */
   const handlePlaybackStateChange = useCallback(
+    (playbackInfo: PlaybackInfo) => {
+      setPlaybackInfo(playbackInfo);
+      onStateChange?.(playbackInfo);
+    },
+    [onStateChange]
+  );
+
+  /**
+   * Handle media player events via callback
+   */
+  const handleMediaPlayerEvent = useCallback(
     (event: MediaPlayerEvent) => {
-      if (event.data) {
+      if (event.data && event.type === 'playbackStateChanged') {
         setPlaybackInfo(event.data);
         onStateChange?.(event.data);
       }
@@ -50,35 +63,28 @@ export const usePlaybackStateChange = (options?: {
     [onStateChange]
   );
 
-  // Set up event listeners
+  // Set up callbacks for Nitro modules
   useEffect(() => {
-    const subscriptions: Array<{ remove: () => void }> = [];
-
-    // Listen for playback state changes
-    const playbackSubscription = AndroidAuto.addEventListener(
-      'playbackStateChanged',
-      handlePlaybackStateChange
-    );
-    subscriptions.push(playbackSubscription);
+    // Set up playback state callback
+    AndroidAuto.setPlaybackStateCallback(handlePlaybackStateChange);
+    
+    // Set up media player event callback
+    AndroidAuto.setMediaPlayerEventCallback(handleMediaPlayerEvent);
 
     // Fetch initial state if requested
-    if (fetchInitialState) {
+    if (fetchInitialState && !isInitializedRef.current) {
+      isInitializedRef.current = true;
       fetchPlaybackState().catch(() => {
         // Error is already handled in fetchPlaybackState
       });
     }
 
-    // Cleanup function
+    // Cleanup function - remove callbacks
     return () => {
-      subscriptions.forEach((subscription) => {
-        try {
-          subscription.remove();
-        } catch (err) {
-          console.warn('Error removing subscription:', err);
-        }
-      });
+      AndroidAuto.setPlaybackStateCallback(null);
+      AndroidAuto.setMediaPlayerEventCallback(null);
     };
-  }, [fetchInitialState, fetchPlaybackState, handlePlaybackStateChange]);
+  }, [fetchInitialState, fetchPlaybackState, handlePlaybackStateChange, handleMediaPlayerEvent]);
 
   return {
     // Current playback state

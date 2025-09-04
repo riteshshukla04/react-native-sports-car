@@ -46,15 +46,15 @@ class AndroidAutoMediaService : MediaBrowserServiceCompat() {
         private const val KEY_APP_STATE = "app_state"
         
         // Broadcast actions
-        const val ACTION_UPDATE_MEDIA_LIBRARY = "com.sportscar.UPDATE_MEDIA_LIBRARY"
-        const val ACTION_SET_LAYOUT_TYPE = "com.sportscar.SET_LAYOUT_TYPE"
-        const val ACTION_PLAY_MEDIA = "com.sportscar.PLAY_MEDIA"
-        const val ACTION_PAUSE = "com.sportscar.PAUSE"
-        const val ACTION_RESUME = "com.sportscar.RESUME"
-        const val ACTION_STOP = "com.sportscar.STOP"
-        const val ACTION_SEEK_TO = "com.sportscar.SEEK_TO"
-        const val ACTION_SET_PLAYBACK_SPEED = "com.sportscar.SET_PLAYBACK_SPEED"
-        const val ACTION_APP_STATE_CHANGED = "com.sportscar.APP_STATE_CHANGED"
+        const val ACTION_UPDATE_MEDIA_LIBRARY = "com.margelo.nitro.sportscar.UPDATE_MEDIA_LIBRARY"
+        const val ACTION_SET_LAYOUT_TYPE = "com.margelo.nitro.sportscar.SET_LAYOUT_TYPE"
+        const val ACTION_PLAY_MEDIA = "com.margelo.nitro.sportscar.PLAY_MEDIA"
+        const val ACTION_PAUSE = "com.margelo.nitro.sportscar.PAUSE"
+        const val ACTION_RESUME = "com.margelo.nitro.sportscar.RESUME"
+        const val ACTION_STOP = "com.margelo.nitro.sportscar.STOP"
+        const val ACTION_SEEK_TO = "com.margelo.nitro.sportscar.SEEK_TO"
+        const val ACTION_SET_PLAYBACK_SPEED = "com.margelo.nitro.sportscar.SET_PLAYBACK_SPEED"
+        const val ACTION_APP_STATE_CHANGED = "com.margelo.nitro.sportscar.APP_STATE_CHANGED"
         
         // Intent extras
         const val EXTRA_MEDIA_LIBRARY_JSON = "media_library_json"

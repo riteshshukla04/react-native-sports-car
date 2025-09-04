@@ -8,8 +8,9 @@ A React Native module for Android Auto integration with customizable media playe
 - 🎨 **Fully Customizable UI**: Configure layouts and media items from TypeScript
 - 🚗 **Android Auto Integration**: Native `MediaBrowserServiceCompat` implementation
 - ⚡ **Real-time Controls**: Play, pause, seek, speed control, and more
-- 📱 **Event System**: Listen to playback state changes and media transitions
+- 📱 **Callback System**: React to playback state changes and media transitions (Nitro Modules)
 - 🖼️ **Image Caching**: Efficient artwork loading with Glide integration
+- 🚀 **Nitro Modules**: Built with the latest React Native architecture for better performance
 
 > **⚠️ Important**: Video content only plays in **parked mode** due to **Android Auto platform restrictions**, not module limitations. While driving, only audio from videos will play.
 > 
@@ -18,28 +19,17 @@ A React Native module for Android Auto integration with customizable media playe
 ## Installation
 
 ```bash
-npm install react-native-sportscar
+npm install react-native-sportscar react-native-nitro-modules
 
 # or
-yarn add react-native-sportscar
+yarn add react-native-sportscar react-native-nitro-modules
 ```
 
-## Requirements
 
-This library requires React Native's **New Architecture** (TurboModules). Make sure to enable it in your app:
-
-**Android** - Add to `android/gradle.properties`:
-```properties
-newArchEnabled=true
-```
-
-**iOS** - Add to `ios/Podfile`:
-```ruby
-use_react_native!(
-  :path => config[:reactNativePath],
-  :new_architecture_enabled => true
-)
-```
+**Dependencies**:
+- React Native >= 0.60
+- Android minSdkVersion >= 29
+- Android Auto compatible device or DHU
 
 ## Android Setup
 
@@ -209,33 +199,40 @@ console.log('Current position:', playbackInfo.currentPosition);
 console.log('Is playing:', playbackInfo.isPlaying);
 ```
 
-### Event Listeners
+### Event Callbacks (Nitro Modules)
+
+Since Nitro Modules don't support event listeners, the library uses callback-based event handling:
 
 ```typescript
 import { useEffect } from 'react';
 
 useEffect(() => {
-  // Listen to playback state changes
-  const playbackSubscription = AndroidAuto.addEventListener('playbackStateChanged', (event) => {
-    console.log('Playback state:', event.isPlaying);
-    console.log('Current position:', event.currentPosition);
+  // Set up playback state callback
+  AndroidAuto.setPlaybackStateCallback((playbackInfo) => {
+    console.log('Playback state:', playbackInfo.state);
+    console.log('Current position:', playbackInfo.positionMs);
+    console.log('Is playing:', playbackInfo.state === 'playing');
   });
 
-  // Listen to media item changes
-  const mediaSubscription = AndroidAuto.addEventListener('mediaItemChanged', (event) => {
-    console.log('Now playing:', event.mediaItem.title);
-  });
-
-  // Listen to errors
-  const errorSubscription = AndroidAuto.addEventListener('error', (event) => {
-    console.error('Playback error:', event.error);
+  // Set up media player event callback
+  AndroidAuto.setMediaPlayerEventCallback((eventType, data) => {
+    switch (eventType) {
+      case 'mediaItemChanged':
+        console.log('Now playing:', data.mediaItem.title);
+        break;
+      case 'error':
+        console.error('Playback error:', data.error);
+        break;
+      case 'playbackStateChanged':
+        console.log('Playback state changed:', data.state);
+        break;
+    }
   });
 
   return () => {
-    // Clean up listeners
-    AndroidAuto.removeEventListener('playbackStateChanged', playbackSubscription);
-    AndroidAuto.removeEventListener('mediaItemChanged', mediaSubscription);
-    AndroidAuto.removeEventListener('error', errorSubscription);
+    // Clean up callbacks
+    AndroidAuto.setPlaybackStateCallback(null);
+    AndroidAuto.setMediaPlayerEventCallback(null);
   };
 }, []);
 ```
@@ -277,54 +274,91 @@ await AndroidAuto.setLayoutType('GRID');
 
 | Method | Parameters | Return Type | Description |
 |--------|------------|-------------|-------------|
-| `initializeMediaLibrary` | `jsonString: string` | `Promise<void>` | Initialize media library |
-| `playMedia` | `mediaId: string` | `Promise<void>` | Play specific media item |
-| `pause` | - | `Promise<void>` | Pause playback |
-| `resume` | - | `Promise<void>` | Resume playback |
-| `stop` | - | `Promise<void>` | Stop playback |
-| `seekTo` | `positionMs: number` | `Promise<void>` | Seek to position |
-| `setPlaybackSpeed` | `speed: number` | `Promise<void>` | Set playback speed |
+| `initializeMediaLibrary` | `jsonString: string` | `Promise<boolean>` | Initialize media library |
+| `playMedia` | `mediaId: string` | `Promise<boolean>` | Play specific media item |
+| `pause` | - | `Promise<boolean>` | Pause playback |
+| `resume` | - | `Promise<boolean>` | Resume playback |
+| `stop` | - | `Promise<boolean>` | Stop playback |
+| `seekTo` | `positionMs: number` | `Promise<boolean>` | Seek to position |
+| `setPlaybackSpeed` | `speed: number` | `Promise<boolean>` | Set playback speed |
 | `getPlaybackState` | - | `Promise<PlaybackInfo>` | Get current state |
-| `setLayoutType` | `layoutType: LayoutType` | `Promise<void>` | Set UI layout |
-| `updateMediaLibrary` | `jsonString: string` | `Promise<void>` | Update media library |
+| `setLayoutType` | `layoutType: string` | `Promise<boolean>` | Set UI layout |
+| `updateMediaLibrary` | `jsonString: string` | `Promise<boolean>` | Update media library |
+| `refreshAndroidAutoUI` | - | `Promise<boolean>` | Refresh Android Auto UI |
+| `isCurrentlyPlaying` | - | `Promise<boolean>` | Check if currently playing |
+| `getLastPlayedMediaInfo` | - | `Promise<LastPlayedMediaInfo \| null>` | Get last played media info |
+| `handleAppStateChange` | `appState: string` | `Promise<boolean>` | Handle app state change |
+| `getCurrentAppState` | - | `Promise<AppState>` | Get current app state |
+| `setPlaybackStateCallback` | `callback: PlaybackStateCallback \| null` | `void` | Set playback state callback |
+| `setMediaPlayerEventCallback` | `callback: MediaPlayerEventCallback \| null` | `void` | Set media player event callback |
 
+### Callbacks (Nitro Modules)
 
-### Events
+| Callback | Parameters | Description |
+|----------|------------|-------------|
+| `PlaybackStateCallback` | `(playbackInfo: PlaybackInfo) => void` | Called when playback state changes |
+| `MediaPlayerEventCallback` | `(eventType: MediaPlayerEventType, data?: any) => void` | Called for media player events |
 
-| Event | Payload | Description |
-|-------|---------|-------------|
-| `playbackStateChanged` | `PlaybackInfo` | Playback state updated |
-| `mediaItemChanged` | `{mediaItem: AndroidAutoMediaItem}` | Media item changed |
-| `error` | `{error: string}` | Error occurred |
+### Event Types
+
+| Event Type | Description |
+|------------|-------------|
+| `playbackStateChanged` | Playback state updated |
+| `mediaItemChanged` | Media item changed |
+| `error` | Error occurred |
 
 ### Types
 
 ```typescript
-interface AndroidAutoMediaItem {
+// Media Types
+export type LayoutType = 'grid' | 'list';
+export type MediaType = 'audio' | 'video' | 'folder';
+export type PlaybackState = 'playing' | 'paused' | 'stopped' | 'buffering' | 'error';
+export type AppState = 'foreground' | 'background' | 'destroyed';
+export type RepeatMode = 'none' | 'one' | 'all';
+
+// Media Item Interface
+interface MediaItem {
   id: string;
   title: string;
   artist?: string;
   album?: string;
   duration?: number; // milliseconds
-  mediaType: 'AUDIO' | 'VIDEO';
+  mediaType: MediaType;
   mediaUrl: string;
   artworkUrl?: string;
   genre?: string;
   year?: number;
+  children?: MediaItem[]; // for folders
 }
 
+// Media Library Interface
 interface MediaLibrary {
-  layoutType: 'GRID' | 'LIST';
-  items: AndroidAutoMediaItem[];
+  layoutType: LayoutType;
+  items: MediaItem[];
 }
 
+// Playback Information
 interface PlaybackInfo {
-  isPlaying: boolean;
-  currentPosition: number; // milliseconds
-  duration: number; // milliseconds
-  playbackSpeed: number;
+  state: PlaybackState;
   currentMediaId?: string;
+  positionMs: number; // milliseconds
+  durationMs: number; // milliseconds
+  playbackSpeed: number;
+  shuffleEnabled: boolean;
+  repeatMode: RepeatMode;
 }
+
+// Last Played Media Info
+interface LastPlayedMediaInfo {
+  mediaId: string;
+  positionMs: number; // milliseconds
+}
+
+// Callback Types
+type PlaybackStateCallback = (playbackInfo: PlaybackInfo) => void;
+type MediaPlayerEventCallback = (eventType: MediaPlayerEventType, data?: any) => void;
+type MediaPlayerEventType = 'playbackStateChanged' | 'mediaItemChanged' | 'error';
 ```
 
 ## Testing with Android Auto
@@ -452,12 +486,6 @@ adb logcat | grep -E "(AndroidAuto|MediaService|CAR\.)"
 # Check parked mode status
 adb shell settings get global android_auto_parked
 ```
-
-## Requirements
-
-- React Native >= 0.60
-- Android minSdkVersion >= 29
-- Android Auto compatible device or DHU
 
 ## Contributing
 

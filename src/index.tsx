@@ -1,9 +1,15 @@
-import { NativeEventEmitter, Platform } from 'react-native';
-import type { AndroidAutoMediaPlayer } from './types';
-import AndroidAutoSpec from './specs/NativeSportscarSpec';
+import { Platform } from 'react-native';
+import { NitroModules } from 'react-native-nitro-modules';
+import type { Sportscar } from './Sportscar.nitro';
+import type { 
+  AndroidAutoMediaPlayer, 
+  PlaybackStateCallback,
+  MediaPlayerEventCallback,
+  MediaPlayerEventType
+} from './types';
 
-// This library requires React Native's New Architecture (TurboModules)
-const AndroidAutoModule = Platform.OS === 'android' ? AndroidAutoSpec : null;
+const SportscarHybridObject =
+  NitroModules.createHybridObject<Sportscar>('Sportscar');
 
 // Platform detection
 const isIOS = Platform.OS === 'ios';
@@ -11,38 +17,16 @@ const isIOS = Platform.OS === 'ios';
 // Log which architecture is being used (only in development)
 if (__DEV__) {
   console.log(
-    '🏎️ React Native Sportscar: Using New Architecture (TurboModules)'
+    '🏎️ React Native Sportscar: Using New Architecture (Nitro Modules)'
   );
 }
 
-// Create event emitter for media player events (TurboModules use undefined for native module)
-// On iOS, we create a dummy event emitter that does nothing
-const eventEmitter = isIOS
-  ? {
-      addListener: () => ({
-        remove: () => {
-          console.warn(
-            '🏎️ React Native Sportscar: Dummy event listener removed'
-          );
-        },
-      }),
-      removeAllListeners: () => {
-        console.warn(
-          '🏎️ React Native Sportscar: Dummy removeAllListeners called'
-        );
-      },
-      emit: () => {
-        console.warn('🏎️ React Native Sportscar: Dummy event emit called');
-      },
-    }
-  : new NativeEventEmitter(undefined);
+// Callback storage for Nitro modules (since listeners are not supported)
+let playbackStateCallback: PlaybackStateCallback | null = null;
+let mediaPlayerEventCallback: MediaPlayerEventCallback | null = null;
 
-/**
- * React Native Android Auto Media Player
- *
- * This module provides a bridge between React Native and Android Auto
- * for creating customizable media player experiences in vehicles.
- */
+// Export these for potential use by native code
+export { playbackStateCallback, mediaPlayerEventCallback };
 
 // Helper function to check platform and module availability
 const checkPlatformAndModule = (methodName: string) => {
@@ -53,16 +37,16 @@ const checkPlatformAndModule = (methodName: string) => {
     return false;
   }
 
-  if (!AndroidAutoModule) {
-    console.warn('🏎️ React Native Sportscar: AndroidAutoModule not available');
+  if (!SportscarHybridObject) {
+    console.warn('🏎️ React Native Sportscar: SportscarHybridObject not available');
     return false;
   }
 
   return true;
 };
 
-// Helper function to emit events safely
-const emitEvent = (eventType: string, data?: any) => {
+// Helper function to emit events via callbacks
+const emitEvent = (eventType: MediaPlayerEventType, data?: any) => {
   if (isIOS) {
     console.warn(
       `🏎️ React Native Sportscar: iOS does not support event emission for ${eventType}`
@@ -71,7 +55,9 @@ const emitEvent = (eventType: string, data?: any) => {
   }
 
   try {
-    eventEmitter.emit(eventType, data);
+    if (mediaPlayerEventCallback) {
+      mediaPlayerEventCallback({ type: eventType, data });
+    }
   } catch (error) {
     console.error(
       `🏎️ React Native Sportscar: Failed to emit event ${eventType}:`,
@@ -80,19 +66,40 @@ const emitEvent = (eventType: string, data?: any) => {
   }
 };
 
+// Helper function to emit playback state changes via callbacks
+// This function is kept for potential future use by native code
+// const emitPlaybackStateChange = (playbackInfo: PlaybackInfo) => {
+//   if (isIOS) {
+//     console.warn(
+//       '🏎️ React Native Sportscar: iOS does not support playback state changes'
+//     );
+//     return;
+//   }
+
+//   try {
+//     if (playbackStateCallback) {
+//       playbackStateCallback(playbackInfo);
+//     }
+//   } catch (error) {
+//     console.error(
+//       '🏎️ React Native Sportscar: Failed to emit playback state change:',
+//       error
+//     );
+//   }
+// };
+
 export const AndroidAuto: AndroidAutoMediaPlayer = {
   /**
    * Initialize the Android Auto media service with your media library
    * @param mediaLibrary - The media library structure to display in Android Auto
    * @returns Promise<boolean> - true if initialization was successful
    */
-
   initializeMediaLibrary: (mediaLibrary) => {
     if (!checkPlatformAndModule('initializeMediaLibrary')) {
       return Promise.resolve(false);
     }
 
-    return AndroidAutoModule!.initializeMediaLibrary(
+    return SportscarHybridObject.initializeMediaLibrary(
       JSON.stringify(mediaLibrary)
     );
   },
@@ -107,7 +114,7 @@ export const AndroidAuto: AndroidAutoMediaPlayer = {
       return Promise.resolve(false);
     }
 
-    return AndroidAutoModule!.updateMediaLibrary(JSON.stringify(mediaLibrary));
+    return SportscarHybridObject.updateMediaLibrary(JSON.stringify(mediaLibrary));
   },
 
   /**
@@ -120,7 +127,7 @@ export const AndroidAuto: AndroidAutoMediaPlayer = {
       return Promise.resolve(false);
     }
 
-    return AndroidAutoModule!.setLayoutType(layoutType);
+    return SportscarHybridObject.setLayoutType(layoutType);
   },
 
   /**
@@ -132,7 +139,7 @@ export const AndroidAuto: AndroidAutoMediaPlayer = {
       return Promise.resolve(false);
     }
 
-    return AndroidAutoModule!.refreshAndroidAutoUI();
+    return SportscarHybridObject.refreshAndroidAutoUI();
   },
 
   /**
@@ -145,7 +152,7 @@ export const AndroidAuto: AndroidAutoMediaPlayer = {
       return Promise.resolve(false);
     }
 
-    return AndroidAutoModule!.playMedia(mediaId);
+    return SportscarHybridObject.playMedia(mediaId);
   },
 
   /**
@@ -157,7 +164,7 @@ export const AndroidAuto: AndroidAutoMediaPlayer = {
       return Promise.resolve(false);
     }
 
-    return AndroidAutoModule!.pause();
+    return SportscarHybridObject.pause();
   },
 
   /**
@@ -169,7 +176,7 @@ export const AndroidAuto: AndroidAutoMediaPlayer = {
       return Promise.resolve(false);
     }
 
-    return AndroidAutoModule!.resume();
+    return SportscarHybridObject.resume();
   },
 
   /**
@@ -181,7 +188,7 @@ export const AndroidAuto: AndroidAutoMediaPlayer = {
       return Promise.resolve(false);
     }
 
-    return AndroidAutoModule!.stop();
+    return SportscarHybridObject.stop();
   },
 
   /**
@@ -194,7 +201,7 @@ export const AndroidAuto: AndroidAutoMediaPlayer = {
       return Promise.resolve(false);
     }
 
-    return AndroidAutoModule!.seekTo(positionMs);
+    return SportscarHybridObject.seekTo(positionMs);
   },
 
   /**
@@ -214,7 +221,7 @@ export const AndroidAuto: AndroidAutoMediaPlayer = {
       });
     }
 
-    return AndroidAutoModule!.getPlaybackState();
+    return SportscarHybridObject.getPlaybackState();
   },
 
   /**
@@ -227,7 +234,7 @@ export const AndroidAuto: AndroidAutoMediaPlayer = {
       return Promise.resolve(false);
     }
 
-    return AndroidAutoModule!.setPlaybackSpeed(speed);
+    return SportscarHybridObject.setPlaybackSpeed(speed);
   },
 
   /**
@@ -241,7 +248,7 @@ export const AndroidAuto: AndroidAutoMediaPlayer = {
       return Promise.resolve(false);
     }
 
-    return AndroidAutoModule!.handleAppStateChange(appState);
+    return SportscarHybridObject.handleAppStateChange(appState);
   },
 
   /**
@@ -253,7 +260,7 @@ export const AndroidAuto: AndroidAutoMediaPlayer = {
       return Promise.resolve('foreground');
     }
 
-    return AndroidAutoModule!.getCurrentAppState();
+    return SportscarHybridObject.getCurrentAppState();
   },
 
   /**
@@ -265,7 +272,7 @@ export const AndroidAuto: AndroidAutoMediaPlayer = {
       return Promise.resolve(false);
     }
 
-    return AndroidAutoModule!.isCurrentlyPlaying();
+    return SportscarHybridObject.isCurrentlyPlaying();
   },
 
   /**
@@ -277,61 +284,39 @@ export const AndroidAuto: AndroidAutoMediaPlayer = {
       return Promise.resolve(null);
     }
 
-    return AndroidAutoModule!.getLastPlayedMediaInfo();
+    return SportscarHybridObject.getLastPlayedMediaInfo();
   },
 
   /**
-   * Add event listener for media player events
-   * @param eventType - Type of event to listen for
-   * @param listener - Callback function
-   * @returns Subscription object with remove() method
+   * Set callback for playback state changes
+   * Note: Nitro modules use callbacks instead of event listeners
+   * @param callback - Callback function for playback state changes
    */
-  addEventListener: (eventType, listener) => {
+  setPlaybackStateCallback: (callback) => {
     if (isIOS) {
-      throw new Error(
-        '🏎️ React Native Sportscar: iOS does not support addEventListener'
+      console.warn(
+        '🏎️ React Native Sportscar: iOS does not support playback state callbacks'
       );
+      return;
     }
 
-    return eventEmitter.addListener(eventType, listener);
+    playbackStateCallback = callback;
   },
 
   /**
-   * Remove event listener
-   * @param eventType - Type of event to remove listener for (unused, kept for compatibility)
-   * @param listener - Subscription object returned by addEventListener
+   * Set callback for media player events
+   * Note: Nitro modules use callbacks instead of event listeners
+   * @param callback - Callback function for media player events
    */
-  removeEventListener: (_eventType, listener) => {
+  setMediaPlayerEventCallback: (callback) => {
     if (isIOS) {
-      throw new Error(
-        '🏎️ React Native Sportscar: iOS does not support removeEventListener'
+      console.warn(
+        '🏎️ React Native Sportscar: iOS does not support media player event callbacks'
       );
+      return;
     }
 
-    if (listener && typeof listener.remove === 'function') {
-      listener.remove();
-    }
-  },
-
-  /**
-   * Remove all event listeners for a specific event type
-   * @param eventType - Type of event to remove all listeners for
-   */
-  removeAllListeners: (eventType?: string) => {
-    if (isIOS) {
-      throw new Error(
-        '🏎️ React Native Sportscar: iOS does not support removeAllListeners'
-      );
-    }
-
-    if (eventType) {
-      eventEmitter.removeAllListeners(eventType);
-    } else {
-      // Remove all listeners for all event types
-      ['playbackStateChanged', 'mediaItemChanged', 'error'].forEach((type) => {
-        eventEmitter.removeAllListeners(type);
-      });
-    }
+    mediaPlayerEventCallback = callback;
   },
 
   /**
@@ -352,3 +337,8 @@ export * from './hooks';
 
 // Default export
 export default AndroidAuto;
+
+// Basic multiply function for compatibility
+export function multiply(a: number, b: number): number {
+  return SportscarHybridObject.multiply(a, b);
+}
