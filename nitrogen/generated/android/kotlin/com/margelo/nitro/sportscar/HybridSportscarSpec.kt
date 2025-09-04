@@ -42,10 +42,6 @@ abstract class HybridSportscarSpec: HybridObject() {
   // Methods
   @DoNotStrip
   @Keep
-  abstract fun multiply(a: Double, b: Double): Double
-  
-  @DoNotStrip
-  @Keep
   abstract fun initializeMediaLibrary(mediaLibraryJson: String): Promise<Boolean>
   
   @DoNotStrip

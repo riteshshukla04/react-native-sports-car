@@ -59,11 +59,6 @@ namespace margelo::nitro::sportscar {
   
 
   // Methods
-  double JHybridSportscarSpec::multiply(double a, double b) {
-    static const auto method = javaClassStatic()->getMethod<double(double /* a */, double /* b */)>("multiply");
-    auto __result = method(_javaPart, a, b);
-    return __result;
-  }
   std::shared_ptr<Promise<bool>> JHybridSportscarSpec::initializeMediaLibrary(const std::string& mediaLibraryJson) {
     static const auto method = javaClassStatic()->getMethod<jni::local_ref<JPromise::javaobject>(jni::alias_ref<jni::JString> /* mediaLibraryJson */)>("initializeMediaLibrary");
     auto __result = method(_javaPart, jni::make_jstring(mediaLibraryJson));

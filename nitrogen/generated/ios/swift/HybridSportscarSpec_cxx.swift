@@ -110,18 +110,6 @@ open class HybridSportscarSpec_cxx {
 
   // Methods
   @inline(__always)
-  public final func multiply(a: Double, b: Double) -> bridge.Result_double_ {
-    do {
-      let __result = try self.__implementation.multiply(a: a, b: b)
-      let __resultCpp = __result
-      return bridge.create_Result_double_(__resultCpp)
-    } catch (let __error) {
-      let __exceptionPtr = __error.toCpp()
-      return bridge.create_Result_double_(__exceptionPtr)
-    }
-  }
-  
-  @inline(__always)
   public final func initializeMediaLibrary(mediaLibraryJson: std.string) -> bridge.Result_std__shared_ptr_Promise_bool___ {
     do {
       let __result = try self.__implementation.initializeMediaLibrary(mediaLibraryJson: String(mediaLibraryJson))

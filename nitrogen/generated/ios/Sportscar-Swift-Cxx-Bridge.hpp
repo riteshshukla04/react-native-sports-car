@@ -247,15 +247,6 @@ namespace margelo::nitro::sportscar::bridge::swift {
   using std__weak_ptr_HybridSportscarSpec_ = std::weak_ptr<HybridSportscarSpec>;
   inline std__weak_ptr_HybridSportscarSpec_ weakify_std__shared_ptr_HybridSportscarSpec_(const std::shared_ptr<HybridSportscarSpec>& strong) noexcept { return strong; }
   
-  // pragma MARK: Result<double>
-  using Result_double_ = Result<double>;
-  inline Result_double_ create_Result_double_(double value) noexcept {
-    return Result<double>::withValue(std::move(value));
-  }
-  inline Result_double_ create_Result_double_(const std::exception_ptr& error) noexcept {
-    return Result<double>::withError(error);
-  }
-  
   // pragma MARK: Result<std::shared_ptr<Promise<bool>>>
   using Result_std__shared_ptr_Promise_bool___ = Result<std::shared_ptr<Promise<bool>>>;
   inline Result_std__shared_ptr_Promise_bool___ create_Result_std__shared_ptr_Promise_bool___(const std::shared_ptr<Promise<bool>>& value) noexcept {

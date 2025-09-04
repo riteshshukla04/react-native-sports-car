@@ -14,7 +14,6 @@ public protocol HybridSportscarSpec_protocol: HybridObject {
   
 
   // Methods
-  func multiply(a: Double, b: Double) throws -> Double
   func initializeMediaLibrary(mediaLibraryJson: String) throws -> Promise<Bool>
   func updateMediaLibrary(mediaLibraryJson: String) throws -> Promise<Bool>
   func setLayoutType(layoutType: String) throws -> Promise<Bool>

@@ -50,9 +50,6 @@ export interface LastPlayedMediaInfo {
 
 export interface Sportscar
   extends HybridObject<{ ios: 'swift'; android: 'kotlin' }> {
-  // Basic functionality
-  multiply(a: number, b: number): number;
-
   // Android Auto Media Library Management
   initializeMediaLibrary(mediaLibraryJson: string): Promise<boolean>;
   updateMediaLibrary(mediaLibraryJson: string): Promise<boolean>;

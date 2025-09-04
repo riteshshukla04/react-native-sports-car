@@ -53,7 +53,6 @@ namespace margelo::nitro::sportscar {
 
   public:
     // Methods
-    double multiply(double a, double b) override;
     std::shared_ptr<Promise<bool>> initializeMediaLibrary(const std::string& mediaLibraryJson) override;
     std::shared_ptr<Promise<bool>> updateMediaLibrary(const std::string& mediaLibraryJson) override;
     std::shared_ptr<Promise<bool>> setLayoutType(const std::string& layoutType) override;

@@ -64,10 +64,6 @@ class Sportscar : HybridSportscarSpec() {
     }
   }
 
-  override fun multiply(a: Double, b: Double): Double {
-    return a * b
-  }
-
   override fun initializeMediaLibrary(mediaLibraryJson: String): Promise<Boolean> {
     val promise = Promise<Boolean>()
     serviceScope.launch {

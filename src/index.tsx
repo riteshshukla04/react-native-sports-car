@@ -341,8 +341,3 @@ export * from './hooks';
 
 // Default export
 export default AndroidAuto;
-
-// Basic multiply function for compatibility
-export function multiply(a: number, b: number): number {
-  return SportscarHybridObject.multiply(a, b);
-}

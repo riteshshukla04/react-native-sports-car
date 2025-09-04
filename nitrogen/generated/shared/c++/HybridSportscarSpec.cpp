@@ -14,7 +14,6 @@ namespace margelo::nitro::sportscar {
     HybridObject::loadHybridMethods();
     // load custom methods/properties
     registerHybrids(this, [](Prototype& prototype) {
-      prototype.registerHybridMethod("multiply", &HybridSportscarSpec::multiply);
       prototype.registerHybridMethod("initializeMediaLibrary", &HybridSportscarSpec::initializeMediaLibrary);
       prototype.registerHybridMethod("updateMediaLibrary", &HybridSportscarSpec::updateMediaLibrary);
       prototype.registerHybridMethod("setLayoutType", &HybridSportscarSpec::setLayoutType);
