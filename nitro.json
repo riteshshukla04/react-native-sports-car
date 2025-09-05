@@ -1,0 +1,17 @@
+{
+  "cxxNamespace": ["sportscar"],
+  "ios": {
+    "iosModuleName": "Sportscar"
+  },
+  "android": {
+    "androidNamespace": ["sportscar"],
+    "androidCxxLibName": "sportscar"
+  },
+  "autolinking": {
+    "Sportscar": {
+      "swift": "Sportscar",
+      "kotlin": "Sportscar"
+    }
+  },
+  "ignorePaths": ["node_modules"]
+}

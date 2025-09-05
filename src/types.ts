@@ -96,13 +96,18 @@ export interface PlaybackInfo {
   shuffleEnabled: boolean;
 
   /** Repeat mode */
-  repeatMode: 'none' | 'one' | 'all';
+  repeatMode: RepeatMode;
 }
 
 /**
  * App state for lifecycle management
  */
 export type AppState = 'foreground' | 'background' | 'destroyed';
+
+/**
+ * Repeat mode for playback
+ */
+export type RepeatMode = 'none' | 'one' | 'all';
 
 /**
  * Last played media information
@@ -133,6 +138,16 @@ export interface MediaPlayerEvent {
   type: MediaPlayerEventType;
   data?: any;
 }
+
+/**
+ * Callback function type for playback state changes
+ */
+export type PlaybackStateCallback = (playbackInfo: PlaybackInfo) => void;
+
+/**
+ * Callback function type for media player events
+ */
+export type MediaPlayerEventCallback = (event: MediaPlayerEvent) => void;
 
 /**
  * Android Auto Media Player interface
@@ -215,25 +230,16 @@ export interface AndroidAutoMediaPlayer {
   getLastPlayedMediaInfo(): Promise<LastPlayedMediaInfo | null>;
 
   /**
-   * Add event listener for media player events
+   * Set callback for playback state changes
+   * Note: Nitro modules use callbacks instead of event listeners
    */
-  addEventListener(
-    eventType: MediaPlayerEventType,
-    listener: (event: MediaPlayerEvent) => void
-  ): { remove(): void };
+  setPlaybackStateCallback(callback: PlaybackStateCallback | null): void;
 
   /**
-   * Remove event listener
+   * Set callback for media player events
+   * Note: Nitro modules use callbacks instead of event listeners
    */
-  removeEventListener(
-    eventType: MediaPlayerEventType,
-    listener: { remove(): void }
-  ): void;
-
-  /**
-   * Remove all event listeners
-   */
-  removeAllListeners(eventType?: MediaPlayerEventType): void;
+  setMediaPlayerEventCallback(callback: MediaPlayerEventCallback | null): void;
 
   /**
    * Emit an event (for testing purposes)

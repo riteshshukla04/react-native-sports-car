@@ -11,13 +11,30 @@ This project is a monorepo managed using [Yarn workspaces](https://yarnpkg.com/f
 - The library package in the root directory.
 - An example app in the `example/` directory.
 
-To get started with the project, run `yarn` in the root directory to install the required dependencies for each package:
+To get started with the project, make sure you have the correct version of [Node.js](https://nodejs.org/) installed. See the [`.nvmrc`](./.nvmrc) file for the version used in this project.
+
+Run `yarn` in the root directory to install the required dependencies for each package:
 
 ```sh
 yarn
 ```
 
-> Since the project relies on Yarn workspaces, you cannot use [`npm`](https://github.com/npm/cli) for development.
+> Since the project relies on Yarn workspaces, you cannot use [`npm`](https://github.com/npm/cli) for development without manually migrating.
+
+This project uses Nitro Modules. If you're not familiar with how Nitro works, make sure to check the [Nitro Modules Docs](https://nitro.margelo.com/).
+
+You need to run [Nitrogen](https://nitro.margelo.com/docs/nitrogen) to generate the boilerplate code required for this project. The example app will not build without this step.
+
+Run **Nitrogen** in following cases:
+
+- When you make changes to any `*.nitro.ts` files.
+- When running the project for the first time (since the generated files are not committed to the repository).
+
+To invoke **Nitrogen**, use the following command:
+
+```sh
+yarn nitrogen
+```
 
 The [example app](/example/) demonstrates usage of the library. You need to run it to test any changes you make.
 

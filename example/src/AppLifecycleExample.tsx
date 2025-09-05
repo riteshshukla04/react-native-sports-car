@@ -43,31 +43,27 @@ const AppLifecycleExample: React.FC = () => {
     // Check current service state on mount
     checkServiceState();
 
-    // Set up Android Auto event listeners with error handling
-    let playbackSubscription: any = null;
+    // Set up Android Auto callbacks with error handling (Nitro modules use callbacks instead of event listeners)
     try {
-      if (AndroidAuto && AndroidAuto.addEventListener) {
-        playbackSubscription = AndroidAuto.addEventListener(
-          'playbackStateChanged',
-          handlePlaybackStateChange
-        );
+      if (AndroidAuto && AndroidAuto.setPlaybackStateCallback) {
+        AndroidAuto.setPlaybackStateCallback(handlePlaybackStateChange);
       } else {
         console.warn('AndroidAuto module not available');
       }
     } catch (error) {
-      console.error('Failed to set up Android Auto event listener:', error);
+      console.error('Failed to set up Android Auto callback:', error);
     }
 
     return () => {
-      // Remove listeners
+      // Remove callbacks (Nitro modules use callbacks instead of event listeners)
       try {
         // Note: AppState.removeEventListener is deprecated in React Native 0.81.0
         // The listener will be automatically cleaned up when the component unmounts
-        if (playbackSubscription && playbackSubscription.remove) {
-          playbackSubscription.remove();
+        if (AndroidAuto && AndroidAuto.setPlaybackStateCallback) {
+          AndroidAuto.setPlaybackStateCallback(null);
         }
       } catch (error) {
-        console.error('Error removing listeners:', error);
+        console.error('Error removing callbacks:', error);
       }
     };
   }, []);
