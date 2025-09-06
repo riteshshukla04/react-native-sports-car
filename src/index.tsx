@@ -8,11 +8,15 @@ import type {
   MediaPlayerEventType,
 } from './types';
 
-const SportscarHybridObject =
-  NitroModules.createHybridObject<Sportscar>('Sportscar');
-
 // Platform detection
 const isIOS = Platform.OS === 'ios';
+
+let SportscarHybridObject: Sportscar | null = null;
+
+if (!isIOS) {
+  SportscarHybridObject =
+    NitroModules.createHybridObject<Sportscar>('Sportscar');
+}
 
 // Log which architecture is being used (only in development)
 if (__DEV__) {
@@ -29,7 +33,7 @@ let mediaPlayerEventCallback: MediaPlayerEventCallback | null = null;
 export { playbackStateCallback, mediaPlayerEventCallback };
 
 // Helper function to check platform and module availability
-const checkPlatformAndModule = (methodName: string) => {
+const checkPlatformAndModule = (methodName: string): boolean => {
   if (isIOS) {
     console.warn(
       `🏎️ React Native Sportscar: iOS does not support ${methodName}`
@@ -45,6 +49,14 @@ const checkPlatformAndModule = (methodName: string) => {
   }
 
   return true;
+};
+
+// Helper function to get the non-null SportscarHybridObject
+const getSportscarHybridObject = (): Sportscar => {
+  if (!SportscarHybridObject) {
+    throw new Error('SportscarHybridObject is not available');
+  }
+  return SportscarHybridObject;
 };
 
 // Helper function to emit events via callbacks
@@ -101,7 +113,7 @@ export const AndroidAuto: AndroidAutoMediaPlayer = {
       return Promise.resolve(false);
     }
 
-    return SportscarHybridObject.initializeMediaLibrary(
+    return getSportscarHybridObject().initializeMediaLibrary(
       JSON.stringify(mediaLibrary)
     );
   },
@@ -116,7 +128,7 @@ export const AndroidAuto: AndroidAutoMediaPlayer = {
       return Promise.resolve(false);
     }
 
-    return SportscarHybridObject.updateMediaLibrary(
+    return getSportscarHybridObject().updateMediaLibrary(
       JSON.stringify(mediaLibrary)
     );
   },
@@ -131,7 +143,7 @@ export const AndroidAuto: AndroidAutoMediaPlayer = {
       return Promise.resolve(false);
     }
 
-    return SportscarHybridObject.setLayoutType(layoutType);
+    return getSportscarHybridObject().setLayoutType(layoutType);
   },
 
   /**
@@ -143,7 +155,7 @@ export const AndroidAuto: AndroidAutoMediaPlayer = {
       return Promise.resolve(false);
     }
 
-    return SportscarHybridObject.refreshAndroidAutoUI();
+    return getSportscarHybridObject().refreshAndroidAutoUI();
   },
 
   /**
@@ -156,7 +168,7 @@ export const AndroidAuto: AndroidAutoMediaPlayer = {
       return Promise.resolve(false);
     }
 
-    return SportscarHybridObject.playMedia(mediaId);
+    return getSportscarHybridObject().playMedia(mediaId);
   },
 
   /**
@@ -168,7 +180,7 @@ export const AndroidAuto: AndroidAutoMediaPlayer = {
       return Promise.resolve(false);
     }
 
-    return SportscarHybridObject.pause();
+    return getSportscarHybridObject().pause();
   },
 
   /**
@@ -180,7 +192,7 @@ export const AndroidAuto: AndroidAutoMediaPlayer = {
       return Promise.resolve(false);
     }
 
-    return SportscarHybridObject.resume();
+    return getSportscarHybridObject().resume();
   },
 
   /**
@@ -192,7 +204,7 @@ export const AndroidAuto: AndroidAutoMediaPlayer = {
       return Promise.resolve(false);
     }
 
-    return SportscarHybridObject.stop();
+    return getSportscarHybridObject().stop();
   },
 
   /**
@@ -205,7 +217,7 @@ export const AndroidAuto: AndroidAutoMediaPlayer = {
       return Promise.resolve(false);
     }
 
-    return SportscarHybridObject.seekTo(positionMs);
+    return getSportscarHybridObject().seekTo(positionMs);
   },
 
   /**
@@ -225,7 +237,7 @@ export const AndroidAuto: AndroidAutoMediaPlayer = {
       });
     }
 
-    return SportscarHybridObject.getPlaybackState();
+    return getSportscarHybridObject().getPlaybackState();
   },
 
   /**
@@ -238,7 +250,7 @@ export const AndroidAuto: AndroidAutoMediaPlayer = {
       return Promise.resolve(false);
     }
 
-    return SportscarHybridObject.setPlaybackSpeed(speed);
+    return getSportscarHybridObject().setPlaybackSpeed(speed);
   },
 
   /**
@@ -252,7 +264,7 @@ export const AndroidAuto: AndroidAutoMediaPlayer = {
       return Promise.resolve(false);
     }
 
-    return SportscarHybridObject.handleAppStateChange(appState);
+    return getSportscarHybridObject().handleAppStateChange(appState);
   },
 
   /**
@@ -264,7 +276,7 @@ export const AndroidAuto: AndroidAutoMediaPlayer = {
       return Promise.resolve('foreground');
     }
 
-    return SportscarHybridObject.getCurrentAppState();
+    return getSportscarHybridObject().getCurrentAppState();
   },
 
   /**
@@ -276,7 +288,7 @@ export const AndroidAuto: AndroidAutoMediaPlayer = {
       return Promise.resolve(false);
     }
 
-    return SportscarHybridObject.isCurrentlyPlaying();
+    return getSportscarHybridObject().isCurrentlyPlaying();
   },
 
   /**
@@ -288,7 +300,7 @@ export const AndroidAuto: AndroidAutoMediaPlayer = {
       return Promise.resolve(null);
     }
 
-    return SportscarHybridObject.getLastPlayedMediaInfo();
+    return getSportscarHybridObject().getLastPlayedMediaInfo();
   },
 
   /**
