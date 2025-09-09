@@ -68,6 +68,7 @@ namespace margelo::nitro::sportscar {
     std::shared_ptr<Promise<std::optional<LastPlayedMediaInfo>>> getLastPlayedMediaInfo() override;
     std::shared_ptr<Promise<bool>> handleAppStateChange(const std::string& appState) override;
     std::shared_ptr<Promise<AppState>> getCurrentAppState() override;
+    std::shared_ptr<Promise<bool>> dummyPromiseFunction(const NitroDependency& NitroDependency) override;
 
   private:
     friend HybridBase;

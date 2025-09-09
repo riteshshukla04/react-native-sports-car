@@ -14,6 +14,8 @@ namespace margelo::nitro::sportscar { enum class AppState; }
 namespace margelo::nitro::sportscar { class HybridSportscarSpec; }
 // Forward declaration of `LastPlayedMediaInfo` to properly resolve imports.
 namespace margelo::nitro::sportscar { struct LastPlayedMediaInfo; }
+// Forward declaration of `NitroDependency` to properly resolve imports.
+namespace margelo::nitro::sportscar { struct NitroDependency; }
 // Forward declaration of `PlaybackInfo` to properly resolve imports.
 namespace margelo::nitro::sportscar { struct PlaybackInfo; }
 // Forward declaration of `PlaybackState` to properly resolve imports.
@@ -25,12 +27,14 @@ namespace margelo::nitro::sportscar { enum class RepeatMode; }
 #include "AppState.hpp"
 #include "HybridSportscarSpec.hpp"
 #include "LastPlayedMediaInfo.hpp"
+#include "NitroDependency.hpp"
 #include "PlaybackInfo.hpp"
 #include "PlaybackState.hpp"
 #include "RepeatMode.hpp"
 #include <NitroModules/Promise.hpp>
 #include <NitroModules/Result.hpp>
 #include <exception>
+#include <functional>
 #include <memory>
 #include <optional>
 #include <string>

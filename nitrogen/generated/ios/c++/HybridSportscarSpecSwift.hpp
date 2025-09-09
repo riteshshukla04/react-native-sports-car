@@ -22,6 +22,8 @@ namespace margelo::nitro::sportscar { enum class RepeatMode; }
 namespace margelo::nitro::sportscar { struct LastPlayedMediaInfo; }
 // Forward declaration of `AppState` to properly resolve imports.
 namespace margelo::nitro::sportscar { enum class AppState; }
+// Forward declaration of `NitroDependency` to properly resolve imports.
+namespace margelo::nitro::sportscar { struct NitroDependency; }
 
 #include <NitroModules/Promise.hpp>
 #include <string>
@@ -31,6 +33,8 @@ namespace margelo::nitro::sportscar { enum class AppState; }
 #include "RepeatMode.hpp"
 #include "LastPlayedMediaInfo.hpp"
 #include "AppState.hpp"
+#include "NitroDependency.hpp"
+#include <functional>
 
 #include "Sportscar-Swift-Cxx-Umbrella.hpp"
 
@@ -187,6 +191,14 @@ namespace margelo::nitro::sportscar {
     }
     inline std::shared_ptr<Promise<AppState>> getCurrentAppState() override {
       auto __result = _swiftPart.getCurrentAppState();
+      if (__result.hasError()) [[unlikely]] {
+        std::rethrow_exception(__result.error());
+      }
+      auto __value = std::move(__result.value());
+      return __value;
+    }
+    inline std::shared_ptr<Promise<bool>> dummyPromiseFunction(const NitroDependency& NitroDependency) override {
+      auto __result = _swiftPart.dummyPromiseFunction(NitroDependency);
       if (__result.hasError()) [[unlikely]] {
         std::rethrow_exception(__result.error());
       }

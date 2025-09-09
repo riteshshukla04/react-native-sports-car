@@ -16,7 +16,7 @@ import kotlinx.coroutines.*
 
 @DoNotStrip
 class Sportscar : HybridSportscarSpec() {
-  
+
   private var mediaService: AndroidAutoMediaService? = null
   private var serviceBound = false
   private val serviceScope = CoroutineScope(Dispatchers.Main + SupervisorJob())
@@ -321,5 +321,13 @@ class Sportscar : HybridSportscarSpec() {
       promise.reject(e)
     }
     return promise
+  }
+
+
+  override fun dummyPromiseFunction(NitroDependency: NitroDependency): Promise<Boolean> {
+    return  Promise.async {
+      val task= NitroDependency.callAsyncFunction().await()
+      task.await()
+    }
   }
 }

@@ -17,6 +17,8 @@ namespace margelo::nitro::sportscar { enum class RepeatMode; }
 namespace margelo::nitro::sportscar { struct LastPlayedMediaInfo; }
 // Forward declaration of `AppState` to properly resolve imports.
 namespace margelo::nitro::sportscar { enum class AppState; }
+// Forward declaration of `NitroDependency` to properly resolve imports.
+namespace margelo::nitro::sportscar { struct NitroDependency; }
 
 #include <NitroModules/Promise.hpp>
 #include <NitroModules/JPromise.hpp>
@@ -32,6 +34,10 @@ namespace margelo::nitro::sportscar { enum class AppState; }
 #include "JLastPlayedMediaInfo.hpp"
 #include "AppState.hpp"
 #include "JAppState.hpp"
+#include "NitroDependency.hpp"
+#include "JNitroDependency.hpp"
+#include <functional>
+#include "JFunc_std__shared_ptr_Promise_std__shared_ptr_Promise_bool____.hpp"
 
 namespace margelo::nitro::sportscar {
 
@@ -291,6 +297,22 @@ namespace margelo::nitro::sportscar {
       __result->cthis()->addOnResolvedListener([=](const jni::alias_ref<jni::JObject>& __boxedResult) {
         auto __result = jni::static_ref_cast<JAppState>(__boxedResult);
         __promise->resolve(__result->toCpp());
+      });
+      __result->cthis()->addOnRejectedListener([=](const jni::alias_ref<jni::JThrowable>& __throwable) {
+        jni::JniException __jniError(__throwable);
+        __promise->reject(std::make_exception_ptr(__jniError));
+      });
+      return __promise;
+    }();
+  }
+  std::shared_ptr<Promise<bool>> JHybridSportscarSpec::dummyPromiseFunction(const NitroDependency& NitroDependency) {
+    static const auto method = javaClassStatic()->getMethod<jni::local_ref<JPromise::javaobject>(jni::alias_ref<JNitroDependency> /* NitroDependency */)>("dummyPromiseFunction");
+    auto __result = method(_javaPart, JNitroDependency::fromCpp(NitroDependency));
+    return [&]() {
+      auto __promise = Promise<bool>::create();
+      __result->cthis()->addOnResolvedListener([=](const jni::alias_ref<jni::JObject>& __boxedResult) {
+        auto __result = jni::static_ref_cast<jni::JBoolean>(__boxedResult);
+        __promise->resolve(static_cast<bool>(__result->value()));
       });
       __result->cthis()->addOnRejectedListener([=](const jni::alias_ref<jni::JThrowable>& __throwable) {
         jni::JniException __jniError(__throwable);

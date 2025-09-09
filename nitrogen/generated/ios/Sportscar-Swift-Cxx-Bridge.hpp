@@ -235,6 +235,63 @@ namespace margelo::nitro::sportscar::bridge::swift {
     return Func_void_AppState_Wrapper(std::move(value));
   }
   
+  // pragma MARK: std::function<std::shared_ptr<Promise<std::shared_ptr<Promise<bool>>>>()>
+  /**
+   * Specialized version of `std::function<std::shared_ptr<Promise<std::shared_ptr<Promise<bool>>>>()>`.
+   */
+  using Func_std__shared_ptr_Promise_std__shared_ptr_Promise_bool____ = std::function<std::shared_ptr<Promise<std::shared_ptr<Promise<bool>>>>()>;
+  /**
+   * Wrapper class for a `std::function<std::shared_ptr<Promise<std::shared_ptr<Promise<bool>>>>()>`, this can be used from Swift.
+   */
+  class Func_std__shared_ptr_Promise_std__shared_ptr_Promise_bool_____Wrapper final {
+  public:
+    explicit Func_std__shared_ptr_Promise_std__shared_ptr_Promise_bool_____Wrapper(std::function<std::shared_ptr<Promise<std::shared_ptr<Promise<bool>>>>()>&& func): _function(std::make_unique<std::function<std::shared_ptr<Promise<std::shared_ptr<Promise<bool>>>>()>>(std::move(func))) {}
+    inline std::shared_ptr<Promise<std::shared_ptr<Promise<bool>>>> call() const noexcept {
+      auto __result = _function->operator()();
+      return __result;
+    }
+  private:
+    std::unique_ptr<std::function<std::shared_ptr<Promise<std::shared_ptr<Promise<bool>>>>()>> _function;
+  } SWIFT_NONCOPYABLE;
+  Func_std__shared_ptr_Promise_std__shared_ptr_Promise_bool____ create_Func_std__shared_ptr_Promise_std__shared_ptr_Promise_bool____(void* _Nonnull swiftClosureWrapper) noexcept;
+  inline Func_std__shared_ptr_Promise_std__shared_ptr_Promise_bool_____Wrapper wrap_Func_std__shared_ptr_Promise_std__shared_ptr_Promise_bool____(Func_std__shared_ptr_Promise_std__shared_ptr_Promise_bool____ value) noexcept {
+    return Func_std__shared_ptr_Promise_std__shared_ptr_Promise_bool_____Wrapper(std::move(value));
+  }
+  
+  // pragma MARK: std::shared_ptr<Promise<std::shared_ptr<Promise<bool>>>>
+  /**
+   * Specialized version of `std::shared_ptr<Promise<std::shared_ptr<Promise<bool>>>>`.
+   */
+  using std__shared_ptr_Promise_std__shared_ptr_Promise_bool____ = std::shared_ptr<Promise<std::shared_ptr<Promise<bool>>>>;
+  inline std::shared_ptr<Promise<std::shared_ptr<Promise<bool>>>> create_std__shared_ptr_Promise_std__shared_ptr_Promise_bool____() noexcept {
+    return Promise<std::shared_ptr<Promise<bool>>>::create();
+  }
+  inline PromiseHolder<std::shared_ptr<Promise<bool>>> wrap_std__shared_ptr_Promise_std__shared_ptr_Promise_bool____(std::shared_ptr<Promise<std::shared_ptr<Promise<bool>>>> promise) noexcept {
+    return PromiseHolder<std::shared_ptr<Promise<bool>>>(std::move(promise));
+  }
+  
+  // pragma MARK: std::function<void(const std::shared_ptr<Promise<bool>>& /* result */)>
+  /**
+   * Specialized version of `std::function<void(const std::shared_ptr<Promise<bool>>&)>`.
+   */
+  using Func_void_std__shared_ptr_Promise_bool__ = std::function<void(const std::shared_ptr<Promise<bool>>& /* result */)>;
+  /**
+   * Wrapper class for a `std::function<void(const std::shared_ptr<Promise<bool>>& / * result * /)>`, this can be used from Swift.
+   */
+  class Func_void_std__shared_ptr_Promise_bool___Wrapper final {
+  public:
+    explicit Func_void_std__shared_ptr_Promise_bool___Wrapper(std::function<void(const std::shared_ptr<Promise<bool>>& /* result */)>&& func): _function(std::make_unique<std::function<void(const std::shared_ptr<Promise<bool>>& /* result */)>>(std::move(func))) {}
+    inline void call(std::shared_ptr<Promise<bool>> result) const noexcept {
+      _function->operator()(result);
+    }
+  private:
+    std::unique_ptr<std::function<void(const std::shared_ptr<Promise<bool>>& /* result */)>> _function;
+  } SWIFT_NONCOPYABLE;
+  Func_void_std__shared_ptr_Promise_bool__ create_Func_void_std__shared_ptr_Promise_bool__(void* _Nonnull swiftClosureWrapper) noexcept;
+  inline Func_void_std__shared_ptr_Promise_bool___Wrapper wrap_Func_void_std__shared_ptr_Promise_bool__(Func_void_std__shared_ptr_Promise_bool__ value) noexcept {
+    return Func_void_std__shared_ptr_Promise_bool___Wrapper(std::move(value));
+  }
+  
   // pragma MARK: std::shared_ptr<HybridSportscarSpec>
   /**
    * Specialized version of `std::shared_ptr<HybridSportscarSpec>`.

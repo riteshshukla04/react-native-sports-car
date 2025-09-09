@@ -1,6 +1,6 @@
 import { Platform } from 'react-native';
 import { NitroModules } from 'react-native-nitro-modules';
-import type { Sportscar } from './Sportscar.nitro';
+import type { NitroDependency, Sportscar } from './Sportscar.nitro';
 import type {
   AndroidAutoMediaPlayer,
   PlaybackStateCallback,
@@ -335,6 +335,13 @@ export const AndroidAuto: AndroidAutoMediaPlayer = {
     mediaPlayerEventCallback = callback;
   },
 
+  callDummyPromiseFunction: (NitroDependency: NitroDependency) => {
+    if (!checkPlatformAndModule('callDummyPromiseFunction')) {
+      return Promise.resolve(false);
+    }
+
+    return getSportscarHybridObject().dummyPromiseFunction(NitroDependency);
+  },
   /**
    * Emit an event (for testing purposes)
    * @param eventType - Type of event to emit

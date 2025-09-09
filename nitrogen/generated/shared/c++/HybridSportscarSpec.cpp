@@ -29,6 +29,7 @@ namespace margelo::nitro::sportscar {
       prototype.registerHybridMethod("getLastPlayedMediaInfo", &HybridSportscarSpec::getLastPlayedMediaInfo);
       prototype.registerHybridMethod("handleAppStateChange", &HybridSportscarSpec::handleAppStateChange);
       prototype.registerHybridMethod("getCurrentAppState", &HybridSportscarSpec::getCurrentAppState);
+      prototype.registerHybridMethod("dummyPromiseFunction", &HybridSportscarSpec::dummyPromiseFunction);
     });
   }
 

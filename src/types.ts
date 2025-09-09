@@ -1,3 +1,5 @@
+import type { NitroDependency } from "./Sportscar.nitro";
+
 /**
  * Layout type for the Android Auto media browser
  */
@@ -245,6 +247,11 @@ export interface AndroidAutoMediaPlayer {
    * Emit an event (for testing purposes)
    */
   emit(eventType: MediaPlayerEventType, data?: any): void;
+
+  /**
+   * Call a dummy promise function
+   */
+  callDummyPromiseFunction(NitroDependency: NitroDependency): Promise<boolean>;
 }
 
 /**

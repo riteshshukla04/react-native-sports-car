@@ -99,6 +99,10 @@ abstract class HybridSportscarSpec: HybridObject() {
   @DoNotStrip
   @Keep
   abstract fun getCurrentAppState(): Promise<AppState>
+  
+  @DoNotStrip
+  @Keep
+  abstract fun dummyPromiseFunction(NitroDependency: NitroDependency): Promise<Boolean>
 
   private external fun initHybrid(): HybridData
 

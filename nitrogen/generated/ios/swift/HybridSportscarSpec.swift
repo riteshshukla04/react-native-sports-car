@@ -29,6 +29,7 @@ public protocol HybridSportscarSpec_protocol: HybridObject {
   func getLastPlayedMediaInfo() throws -> Promise<LastPlayedMediaInfo?>
   func handleAppStateChange(appState: String) throws -> Promise<Bool>
   func getCurrentAppState() throws -> Promise<AppState>
+  func dummyPromiseFunction(NitroDependency: NitroDependency) throws -> Promise<Bool>
 }
 
 /// See ``HybridSportscarSpec``

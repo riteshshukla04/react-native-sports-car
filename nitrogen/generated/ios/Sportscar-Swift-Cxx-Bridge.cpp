@@ -53,6 +53,23 @@ namespace margelo::nitro::sportscar::bridge::swift {
     };
   }
   
+  // pragma MARK: std::function<std::shared_ptr<Promise<std::shared_ptr<Promise<bool>>>>()>
+  Func_std__shared_ptr_Promise_std__shared_ptr_Promise_bool____ create_Func_std__shared_ptr_Promise_std__shared_ptr_Promise_bool____(void* _Nonnull swiftClosureWrapper) noexcept {
+    auto swiftClosure = Sportscar::Func_std__shared_ptr_Promise_std__shared_ptr_Promise_bool____::fromUnsafe(swiftClosureWrapper);
+    return [swiftClosure = std::move(swiftClosure)]() mutable -> std::shared_ptr<Promise<std::shared_ptr<Promise<bool>>>> {
+      auto __result = swiftClosure.call();
+      return __result;
+    };
+  }
+  
+  // pragma MARK: std::function<void(const std::shared_ptr<Promise<bool>>& /* result */)>
+  Func_void_std__shared_ptr_Promise_bool__ create_Func_void_std__shared_ptr_Promise_bool__(void* _Nonnull swiftClosureWrapper) noexcept {
+    auto swiftClosure = Sportscar::Func_void_std__shared_ptr_Promise_bool__::fromUnsafe(swiftClosureWrapper);
+    return [swiftClosure = std::move(swiftClosure)](const std::shared_ptr<Promise<bool>>& result) mutable -> void {
+      swiftClosure.call(result);
+    };
+  }
+  
   // pragma MARK: std::shared_ptr<HybridSportscarSpec>
   std::shared_ptr<HybridSportscarSpec> create_std__shared_ptr_HybridSportscarSpec_(void* _Nonnull swiftUnsafePointer) noexcept {
     Sportscar::HybridSportscarSpec_cxx swiftPart = Sportscar::HybridSportscarSpec_cxx::fromUnsafe(swiftUnsafePointer);

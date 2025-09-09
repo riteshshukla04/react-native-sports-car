@@ -48,6 +48,10 @@ export interface LastPlayedMediaInfo {
   positionMs: number;
 }
 
+export interface NitroDependency {
+  callAsyncFunction: ()=> Promise<boolean>;
+}
+
 export interface Sportscar
   extends HybridObject<{ ios: 'swift'; android: 'kotlin' }> {
   // Android Auto Media Library Management
@@ -72,4 +76,7 @@ export interface Sportscar
   // App Lifecycle Management
   handleAppStateChange(appState: string): Promise<boolean>;
   getCurrentAppState(): Promise<AppState>;
+
+
+  dummyPromiseFunction(NitroDependency: NitroDependency): Promise<boolean>;
 }

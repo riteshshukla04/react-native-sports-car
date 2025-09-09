@@ -16,6 +16,7 @@
 #include <NitroModules/HybridObjectRegistry.hpp>
 
 #include "JHybridSportscarSpec.hpp"
+#include "JFunc_std__shared_ptr_Promise_std__shared_ptr_Promise_bool____.hpp"
 #include <NitroModules/DefaultConstructableObject.hpp>
 
 namespace margelo::nitro::sportscar {
@@ -28,6 +29,7 @@ int initialize(JavaVM* vm) {
   return facebook::jni::initialize(vm, [] {
     // Register native JNI methods
     margelo::nitro::sportscar::JHybridSportscarSpec::registerNatives();
+    margelo::nitro::sportscar::JFunc_std__shared_ptr_Promise_std__shared_ptr_Promise_bool_____cxx::registerNatives();
 
     // Register Nitro Hybrid Objects
     HybridObjectRegistry::registerHybridObjectConstructor(

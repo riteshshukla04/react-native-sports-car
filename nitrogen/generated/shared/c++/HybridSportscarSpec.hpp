@@ -19,6 +19,8 @@ namespace margelo::nitro::sportscar { struct PlaybackInfo; }
 namespace margelo::nitro::sportscar { struct LastPlayedMediaInfo; }
 // Forward declaration of `AppState` to properly resolve imports.
 namespace margelo::nitro::sportscar { enum class AppState; }
+// Forward declaration of `NitroDependency` to properly resolve imports.
+namespace margelo::nitro::sportscar { struct NitroDependency; }
 
 #include <NitroModules/Promise.hpp>
 #include <string>
@@ -26,6 +28,7 @@ namespace margelo::nitro::sportscar { enum class AppState; }
 #include "LastPlayedMediaInfo.hpp"
 #include <optional>
 #include "AppState.hpp"
+#include "NitroDependency.hpp"
 
 namespace margelo::nitro::sportscar {
 
@@ -73,6 +76,7 @@ namespace margelo::nitro::sportscar {
       virtual std::shared_ptr<Promise<std::optional<LastPlayedMediaInfo>>> getLastPlayedMediaInfo() = 0;
       virtual std::shared_ptr<Promise<bool>> handleAppStateChange(const std::string& appState) = 0;
       virtual std::shared_ptr<Promise<AppState>> getCurrentAppState() = 0;
+      virtual std::shared_ptr<Promise<bool>> dummyPromiseFunction(const NitroDependency& NitroDependency) = 0;
 
     protected:
       // Hybrid Setup
