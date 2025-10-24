@@ -48,7 +48,11 @@ namespace margelo::nitro::sportscar {
      */
     [[maybe_unused]]
     static jni::local_ref<JLastPlayedMediaInfo::javaobject> fromCpp(const LastPlayedMediaInfo& value) {
-      return newInstance(
+      using JSignature = JLastPlayedMediaInfo(jni::alias_ref<jni::JString>, double);
+      static const auto clazz = javaClassStatic();
+      static const auto create = clazz->getStaticMethod<JSignature>("fromCpp");
+      return create(
+        clazz,
         value.mediaId.has_value() ? jni::make_jstring(value.mediaId.value()) : nullptr,
         value.positionMs
       );

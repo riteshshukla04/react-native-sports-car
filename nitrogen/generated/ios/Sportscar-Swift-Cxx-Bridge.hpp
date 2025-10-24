@@ -76,7 +76,7 @@ namespace margelo::nitro::sportscar::bridge::swift {
   private:
     std::unique_ptr<std::function<void(bool /* result */)>> _function;
   } SWIFT_NONCOPYABLE;
-  Func_void_bool create_Func_void_bool(void* _Nonnull swiftClosureWrapper) noexcept;
+  Func_void_bool create_Func_void_bool(void* NON_NULL swiftClosureWrapper) noexcept;
   inline Func_void_bool_Wrapper wrap_Func_void_bool(Func_void_bool value) noexcept {
     return Func_void_bool_Wrapper(std::move(value));
   }
@@ -98,7 +98,7 @@ namespace margelo::nitro::sportscar::bridge::swift {
   private:
     std::unique_ptr<std::function<void(const std::exception_ptr& /* error */)>> _function;
   } SWIFT_NONCOPYABLE;
-  Func_void_std__exception_ptr create_Func_void_std__exception_ptr(void* _Nonnull swiftClosureWrapper) noexcept;
+  Func_void_std__exception_ptr create_Func_void_std__exception_ptr(void* NON_NULL swiftClosureWrapper) noexcept;
   inline Func_void_std__exception_ptr_Wrapper wrap_Func_void_std__exception_ptr(Func_void_std__exception_ptr value) noexcept {
     return Func_void_std__exception_ptr_Wrapper(std::move(value));
   }
@@ -147,7 +147,7 @@ namespace margelo::nitro::sportscar::bridge::swift {
   private:
     std::unique_ptr<std::function<void(const PlaybackInfo& /* result */)>> _function;
   } SWIFT_NONCOPYABLE;
-  Func_void_PlaybackInfo create_Func_void_PlaybackInfo(void* _Nonnull swiftClosureWrapper) noexcept;
+  Func_void_PlaybackInfo create_Func_void_PlaybackInfo(void* NON_NULL swiftClosureWrapper) noexcept;
   inline Func_void_PlaybackInfo_Wrapper wrap_Func_void_PlaybackInfo(Func_void_PlaybackInfo value) noexcept {
     return Func_void_PlaybackInfo_Wrapper(std::move(value));
   }
@@ -196,7 +196,7 @@ namespace margelo::nitro::sportscar::bridge::swift {
   private:
     std::unique_ptr<std::function<void(const std::optional<LastPlayedMediaInfo>& /* result */)>> _function;
   } SWIFT_NONCOPYABLE;
-  Func_void_std__optional_LastPlayedMediaInfo_ create_Func_void_std__optional_LastPlayedMediaInfo_(void* _Nonnull swiftClosureWrapper) noexcept;
+  Func_void_std__optional_LastPlayedMediaInfo_ create_Func_void_std__optional_LastPlayedMediaInfo_(void* NON_NULL swiftClosureWrapper) noexcept;
   inline Func_void_std__optional_LastPlayedMediaInfo__Wrapper wrap_Func_void_std__optional_LastPlayedMediaInfo_(Func_void_std__optional_LastPlayedMediaInfo_ value) noexcept {
     return Func_void_std__optional_LastPlayedMediaInfo__Wrapper(std::move(value));
   }
@@ -230,7 +230,7 @@ namespace margelo::nitro::sportscar::bridge::swift {
   private:
     std::unique_ptr<std::function<void(AppState /* result */)>> _function;
   } SWIFT_NONCOPYABLE;
-  Func_void_AppState create_Func_void_AppState(void* _Nonnull swiftClosureWrapper) noexcept;
+  Func_void_AppState create_Func_void_AppState(void* NON_NULL swiftClosureWrapper) noexcept;
   inline Func_void_AppState_Wrapper wrap_Func_void_AppState(Func_void_AppState value) noexcept {
     return Func_void_AppState_Wrapper(std::move(value));
   }
@@ -240,8 +240,8 @@ namespace margelo::nitro::sportscar::bridge::swift {
    * Specialized version of `std::shared_ptr<HybridSportscarSpec>`.
    */
   using std__shared_ptr_HybridSportscarSpec_ = std::shared_ptr<HybridSportscarSpec>;
-  std::shared_ptr<HybridSportscarSpec> create_std__shared_ptr_HybridSportscarSpec_(void* _Nonnull swiftUnsafePointer) noexcept;
-  void* _Nonnull get_std__shared_ptr_HybridSportscarSpec_(std__shared_ptr_HybridSportscarSpec_ cppType) noexcept;
+  std::shared_ptr<HybridSportscarSpec> create_std__shared_ptr_HybridSportscarSpec_(void* NON_NULL swiftUnsafePointer) noexcept;
+  void* NON_NULL get_std__shared_ptr_HybridSportscarSpec_(std__shared_ptr_HybridSportscarSpec_ cppType);
   
   // pragma MARK: std::weak_ptr<HybridSportscarSpec>
   using std__weak_ptr_HybridSportscarSpec_ = std::weak_ptr<HybridSportscarSpec>;

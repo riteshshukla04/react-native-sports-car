@@ -67,7 +67,11 @@ namespace margelo::nitro::sportscar {
      */
     [[maybe_unused]]
     static jni::local_ref<JPlaybackInfo::javaobject> fromCpp(const PlaybackInfo& value) {
-      return newInstance(
+      using JSignature = JPlaybackInfo(jni::alias_ref<JPlaybackState>, jni::alias_ref<jni::JString>, double, double, double, jboolean, jni::alias_ref<JRepeatMode>);
+      static const auto clazz = javaClassStatic();
+      static const auto create = clazz->getStaticMethod<JSignature>("fromCpp");
+      return create(
+        clazz,
         JPlaybackState::fromCpp(value.state),
         value.currentMediaId.has_value() ? jni::make_jstring(value.currentMediaId.value()) : nullptr,
         value.positionMs,

@@ -23,14 +23,7 @@ public final class Func_void_std__optional_LastPlayedMediaInfo_ {
 
   @inline(__always)
   public func call(value: bridge.std__optional_LastPlayedMediaInfo_) -> Void {
-    self.closure({ () -> LastPlayedMediaInfo? in
-      if bridge.has_value_std__optional_LastPlayedMediaInfo_(value) {
-        let __unwrapped = bridge.get_std__optional_LastPlayedMediaInfo_(value)
-        return __unwrapped
-      } else {
-        return nil
-      }
-    }())
+    self.closure(value.value)
   }
 
   /**

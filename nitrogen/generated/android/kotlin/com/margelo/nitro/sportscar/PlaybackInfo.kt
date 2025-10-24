@@ -9,7 +9,6 @@ package com.margelo.nitro.sportscar
 
 import androidx.annotation.Keep
 import com.facebook.proguard.annotations.DoNotStrip
-import com.margelo.nitro.core.*
 
 
 /**
@@ -17,31 +16,39 @@ import com.margelo.nitro.core.*
  */
 @DoNotStrip
 @Keep
-data class PlaybackInfo
+data class PlaybackInfo(
   @DoNotStrip
   @Keep
-  constructor(
+  val state: PlaybackState,
+  @DoNotStrip
+  @Keep
+  val currentMediaId: String?,
+  @DoNotStrip
+  @Keep
+  val positionMs: Double,
+  @DoNotStrip
+  @Keep
+  val durationMs: Double,
+  @DoNotStrip
+  @Keep
+  val playbackSpeed: Double,
+  @DoNotStrip
+  @Keep
+  val shuffleEnabled: Boolean,
+  @DoNotStrip
+  @Keep
+  val repeatMode: RepeatMode
+) {
+  private companion object {
+    /**
+     * Constructor called from C++
+     */
     @DoNotStrip
     @Keep
-    val state: PlaybackState,
-    @DoNotStrip
-    @Keep
-    val currentMediaId: String?,
-    @DoNotStrip
-    @Keep
-    val positionMs: Double,
-    @DoNotStrip
-    @Keep
-    val durationMs: Double,
-    @DoNotStrip
-    @Keep
-    val playbackSpeed: Double,
-    @DoNotStrip
-    @Keep
-    val shuffleEnabled: Boolean,
-    @DoNotStrip
-    @Keep
-    val repeatMode: RepeatMode
-  ) {
-  /* main constructor */
+    @Suppress("unused")
+    @JvmStatic
+    private fun fromCpp(state: PlaybackState, currentMediaId: String?, positionMs: Double, durationMs: Double, playbackSpeed: Double, shuffleEnabled: Boolean, repeatMode: RepeatMode): PlaybackInfo {
+      return PlaybackInfo(state, currentMediaId, positionMs, durationMs, playbackSpeed, shuffleEnabled, repeatMode)
+    }
+  }
 }

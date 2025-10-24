@@ -7,6 +7,7 @@
 
 import Foundation
 import NitroModules
+import NitroModules
 
 /// See ``HybridSportscarSpec``
 public protocol HybridSportscarSpec_protocol: HybridObject {

@@ -14,7 +14,7 @@
 namespace margelo::nitro::sportscar::bridge::swift {
 
   // pragma MARK: std::function<void(bool /* result */)>
-  Func_void_bool create_Func_void_bool(void* _Nonnull swiftClosureWrapper) noexcept {
+  Func_void_bool create_Func_void_bool(void* NON_NULL swiftClosureWrapper) noexcept {
     auto swiftClosure = Sportscar::Func_void_bool::fromUnsafe(swiftClosureWrapper);
     return [swiftClosure = std::move(swiftClosure)](bool result) mutable -> void {
       swiftClosure.call(result);
@@ -22,7 +22,7 @@ namespace margelo::nitro::sportscar::bridge::swift {
   }
   
   // pragma MARK: std::function<void(const std::exception_ptr& /* error */)>
-  Func_void_std__exception_ptr create_Func_void_std__exception_ptr(void* _Nonnull swiftClosureWrapper) noexcept {
+  Func_void_std__exception_ptr create_Func_void_std__exception_ptr(void* NON_NULL swiftClosureWrapper) noexcept {
     auto swiftClosure = Sportscar::Func_void_std__exception_ptr::fromUnsafe(swiftClosureWrapper);
     return [swiftClosure = std::move(swiftClosure)](const std::exception_ptr& error) mutable -> void {
       swiftClosure.call(error);
@@ -30,7 +30,7 @@ namespace margelo::nitro::sportscar::bridge::swift {
   }
   
   // pragma MARK: std::function<void(const PlaybackInfo& /* result */)>
-  Func_void_PlaybackInfo create_Func_void_PlaybackInfo(void* _Nonnull swiftClosureWrapper) noexcept {
+  Func_void_PlaybackInfo create_Func_void_PlaybackInfo(void* NON_NULL swiftClosureWrapper) noexcept {
     auto swiftClosure = Sportscar::Func_void_PlaybackInfo::fromUnsafe(swiftClosureWrapper);
     return [swiftClosure = std::move(swiftClosure)](const PlaybackInfo& result) mutable -> void {
       swiftClosure.call(result);
@@ -38,7 +38,7 @@ namespace margelo::nitro::sportscar::bridge::swift {
   }
   
   // pragma MARK: std::function<void(const std::optional<LastPlayedMediaInfo>& /* result */)>
-  Func_void_std__optional_LastPlayedMediaInfo_ create_Func_void_std__optional_LastPlayedMediaInfo_(void* _Nonnull swiftClosureWrapper) noexcept {
+  Func_void_std__optional_LastPlayedMediaInfo_ create_Func_void_std__optional_LastPlayedMediaInfo_(void* NON_NULL swiftClosureWrapper) noexcept {
     auto swiftClosure = Sportscar::Func_void_std__optional_LastPlayedMediaInfo_::fromUnsafe(swiftClosureWrapper);
     return [swiftClosure = std::move(swiftClosure)](const std::optional<LastPlayedMediaInfo>& result) mutable -> void {
       swiftClosure.call(result);
@@ -46,7 +46,7 @@ namespace margelo::nitro::sportscar::bridge::swift {
   }
   
   // pragma MARK: std::function<void(AppState /* result */)>
-  Func_void_AppState create_Func_void_AppState(void* _Nonnull swiftClosureWrapper) noexcept {
+  Func_void_AppState create_Func_void_AppState(void* NON_NULL swiftClosureWrapper) noexcept {
     auto swiftClosure = Sportscar::Func_void_AppState::fromUnsafe(swiftClosureWrapper);
     return [swiftClosure = std::move(swiftClosure)](AppState result) mutable -> void {
       swiftClosure.call(static_cast<int>(result));
@@ -54,11 +54,11 @@ namespace margelo::nitro::sportscar::bridge::swift {
   }
   
   // pragma MARK: std::shared_ptr<HybridSportscarSpec>
-  std::shared_ptr<HybridSportscarSpec> create_std__shared_ptr_HybridSportscarSpec_(void* _Nonnull swiftUnsafePointer) noexcept {
+  std::shared_ptr<HybridSportscarSpec> create_std__shared_ptr_HybridSportscarSpec_(void* NON_NULL swiftUnsafePointer) noexcept {
     Sportscar::HybridSportscarSpec_cxx swiftPart = Sportscar::HybridSportscarSpec_cxx::fromUnsafe(swiftUnsafePointer);
     return std::make_shared<margelo::nitro::sportscar::HybridSportscarSpecSwift>(swiftPart);
   }
-  void* _Nonnull get_std__shared_ptr_HybridSportscarSpec_(std__shared_ptr_HybridSportscarSpec_ cppType) noexcept {
+  void* NON_NULL get_std__shared_ptr_HybridSportscarSpec_(std__shared_ptr_HybridSportscarSpec_ cppType) {
     std::shared_ptr<margelo::nitro::sportscar::HybridSportscarSpecSwift> swiftWrapper = std::dynamic_pointer_cast<margelo::nitro::sportscar::HybridSportscarSpecSwift>(cppType);
     #ifdef NITRO_DEBUG
     if (swiftWrapper == nullptr) [[unlikely]] {
