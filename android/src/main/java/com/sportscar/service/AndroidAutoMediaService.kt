@@ -120,6 +120,15 @@ class AndroidAutoMediaService : MediaBrowserServiceCompat() {
         // Load persisted data
         loadPersistedData()
         
+        // Clean up expired failed URLs periodically
+        serviceScope.launch {
+            while (isActive) {
+                delay(10 * 60 * 1000) // Every 10 minutes
+                ImageCache.clearExpiredFailedUrls()
+                println("🧹 AndroidAutoMediaService: Cleaned up expired failed URLs")
+            }
+        }
+        
         println("🚀 AndroidAutoMediaService: Service created")
     }
 
@@ -394,6 +403,7 @@ class AndroidAutoMediaService : MediaBrowserServiceCompat() {
             notifyChildrenChanged(ROOT_ID)
             persistData()
             println("✅ AndroidAutoMediaService: Media library initialized with ${library.rootItems.size} items")
+            println("📊 ${getImageCacheStats()}")
         }
     }
 
@@ -405,11 +415,19 @@ class AndroidAutoMediaService : MediaBrowserServiceCompat() {
             updateServiceLayoutHints()
             persistData()
             println("🔄 AndroidAutoMediaService: Media library updated")
+            println("📊 ${getImageCacheStats()}")
         }
     }
 
     fun getMediaLibrary(): MediaLibrary? {
         return mediaLibrary
+    }
+    
+    /**
+     * Get image cache statistics for debugging
+     */
+    fun getImageCacheStats(): String {
+        return "ImageCache: ${ImageCache.getCacheSize()} cached, ${ImageCache.getFailedUrlsCount()} failed"
     }
 
     fun setLayoutType(layoutType: String) {
@@ -846,12 +864,16 @@ class AndroidAutoMediaService : MediaBrowserServiceCompat() {
             }
         }
 
-        // Set artwork if available
+        // Set artwork if available (with fallback to placeholder)
         mediaItem.iconUrl?.let { url ->
-            ImageCache.getCachedBitmap(url)?.let { bitmap ->
+            val bitmap = ImageCache.getCachedBitmap(url, mediaItem.title)
+            if (bitmap != null) {
                 metadata.putBitmap(MediaMetadataCompat.METADATA_KEY_ART, bitmap)
                 metadata.putBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART, bitmap)
                 metadata.putBitmap(MediaMetadataCompat.METADATA_KEY_DISPLAY_ICON, bitmap)
+                println("🖼️ AndroidAutoMediaService: Set artwork for ${mediaItem.title}")
+            } else {
+                println("⚠️ AndroidAutoMediaService: No artwork available for ${mediaItem.title}")
             }
         }
 
