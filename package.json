@@ -65,14 +65,14 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/riteshshukla04/react-native-sportscar.git"
+    "url": "git+https://github.com/riteshshukla04/react-native-sports-car.git"
   },
   "author": "Ritesh Shukla <riteshshukla2381@gmail.com> (https://github.com/riteshshukla04)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/riteshshukla04/react-native-sportscar/issues"
+    "url": "https://github.com/riteshshukla04/react-native-sports-car/issues"
   },
-  "homepage": "https://github.com/riteshshukla04/react-native-sportscar#readme",
+  "homepage": "https://github.com/riteshshukla04/react-native-sports-car#readme",
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"
   },
