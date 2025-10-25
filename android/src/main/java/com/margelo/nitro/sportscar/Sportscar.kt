@@ -104,6 +104,24 @@ class Sportscar : HybridSportscarSpec() {
     return promise
   }
 
+  override fun getMediaLibrary(): Promise<String> {
+    val promise = Promise<String>()
+    try {
+      val mediaLibrary = mediaService?.getMediaLibrary()
+      if (mediaLibrary != null) {
+        val jsonString = MediaLibraryParser.toJson(mediaLibrary)
+        promise.resolve(jsonString)
+        println("📚 Sportscar: Media library retrieved")
+      } else {
+        promise.reject(Exception("No media library available"))
+      }
+    } catch (e: Exception) {
+      println("❌ Sportscar: Failed to get media library - ${e.message}")
+      promise.reject(e)
+    }
+    return promise
+  }
+
   override fun setLayoutType(layoutType: String): Promise<Boolean> {
     val promise = Promise<Boolean>()
     try {

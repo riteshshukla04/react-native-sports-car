@@ -53,6 +53,7 @@ export interface Sportscar
   // Android Auto Media Library Management
   initializeMediaLibrary(mediaLibraryJson: string): Promise<boolean>;
   updateMediaLibrary(mediaLibraryJson: string): Promise<boolean>;
+  getMediaLibrary(): Promise<string>;
   setLayoutType(layoutType: string): Promise<boolean>;
   refreshAndroidAutoUI(): Promise<boolean>;
 

@@ -276,6 +276,8 @@ await AndroidAuto.setLayoutType('GRID');
 | Method                        | Parameters                                   | Return Type                            | Description                     |
 | ----------------------------- | -------------------------------------------- | -------------------------------------- | ------------------------------- |
 | `initializeMediaLibrary`      | `jsonString: string`                         | `Promise<boolean>`                     | Initialize media library        |
+| `updateMediaLibrary`          | `jsonString: string`                         | `Promise<boolean>`                     | Update media library            |
+| `getMediaLibrary`             | -                                            | `Promise<MediaLibrary>`                | Get current media library       |
 | `playMedia`                   | `mediaId: string`                            | `Promise<boolean>`                     | Play specific media item        |
 | `pause`                       | -                                            | `Promise<boolean>`                     | Pause playback                  |
 | `resume`                      | -                                            | `Promise<boolean>`                     | Resume playback                 |
@@ -284,7 +286,6 @@ await AndroidAuto.setLayoutType('GRID');
 | `setPlaybackSpeed`            | `speed: number`                              | `Promise<boolean>`                     | Set playback speed              |
 | `getPlaybackState`            | -                                            | `Promise<PlaybackInfo>`                | Get current state               |
 | `setLayoutType`               | `layoutType: string`                         | `Promise<boolean>`                     | Set UI layout                   |
-| `updateMediaLibrary`          | `jsonString: string`                         | `Promise<boolean>`                     | Update media library            |
 | `refreshAndroidAutoUI`        | -                                            | `Promise<boolean>`                     | Refresh Android Auto UI         |
 | `isCurrentlyPlaying`          | -                                            | `Promise<boolean>`                     | Check if currently playing      |
 | `getLastPlayedMediaInfo`      | -                                            | `Promise<LastPlayedMediaInfo \| null>` | Get last played media info      |

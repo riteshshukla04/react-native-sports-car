@@ -134,6 +134,25 @@ export const AndroidAuto: AndroidAutoMediaPlayer = {
   },
 
   /**
+   * Get the current media library
+   * @returns Promise<MediaLibrary> - Current media library structure
+   */
+  getMediaLibrary: () => {
+    if (!checkPlatformAndModule('getMediaLibrary')) {
+      return Promise.resolve({
+        layoutType: 'grid',
+        rootItems: [],
+        appName: undefined,
+        appIconUrl: undefined,
+      });
+    }
+
+    return getSportscarHybridObject()
+      .getMediaLibrary()
+      .then((jsonString) => JSON.parse(jsonString));
+  },
+
+  /**
    * Set the layout type for the media browser
    * @param layoutType - 'grid' or 'list' layout
    * @returns Promise<boolean> - true if layout was set successfully

@@ -164,6 +164,11 @@ export interface AndroidAutoMediaPlayer {
   updateMediaLibrary(mediaLibrary: MediaLibrary): Promise<boolean>;
 
   /**
+   * Get the current media library
+   */
+  getMediaLibrary(): Promise<MediaLibrary>;
+
+  /**
    * Set the layout type for the media browser
    */
   setLayoutType(layoutType: LayoutType): Promise<boolean>;

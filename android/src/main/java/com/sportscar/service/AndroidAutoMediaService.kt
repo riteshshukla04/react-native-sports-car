@@ -408,6 +408,10 @@ class AndroidAutoMediaService : MediaBrowserServiceCompat() {
         }
     }
 
+    fun getMediaLibrary(): MediaLibrary? {
+        return mediaLibrary
+    }
+
     fun setLayoutType(layoutType: String) {
         mediaLibrary?.let { library ->
             val newLayoutType = when (layoutType.lowercase()) {
