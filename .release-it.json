@@ -1,4 +1,5 @@
 {
+  "ci": true,
   "git": {
     "commitMessage": "chore: release ${version}",
     "tagName": "v${version}",
@@ -10,7 +11,10 @@
     "publish": true,
     "access": "public",
     "publishPath": ".",
-    "ignoreVersion": false
+    "ignoreVersion": false,
+    "publishConfig": {
+      "registry": "https://registry.npmjs.org/"
+    }
   },
   "github": {
     "release": true,

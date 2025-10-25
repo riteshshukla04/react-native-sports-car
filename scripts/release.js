@@ -131,7 +131,7 @@ function publishToNpm(
 ) {
   log(`📦 Publishing to npm...`, colors.blue);
 
-  let releaseCommand = 'yarn release';
+  let releaseCommand = 'yarn release --ci';
 
   if (isPrerelease) {
     releaseCommand += ` --prerelease=${prereleaseType}`;

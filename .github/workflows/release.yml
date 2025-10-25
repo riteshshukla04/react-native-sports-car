@@ -80,14 +80,14 @@ jobs:
         run: |
           if [ "${{ github.event.inputs.dry_run }}" = "true" ]; then
             echo "🧪 Running in dry-run mode"
-            yarn release --dry-run --${{ github.event.inputs.version_type }}
+            yarn release --dry-run --ci --${{ github.event.inputs.version_type }}
           else
             if [ "${{ github.event.inputs.version_type }}" = "prerelease" ]; then
               echo "🚀 Creating prerelease: ${{ github.event.inputs.prerelease_type }}"
-              yarn release --prerelease=${{ github.event.inputs.prerelease_type }}
+              yarn release --prerelease=${{ github.event.inputs.prerelease_type }} --ci
             else
               echo "🚀 Creating ${{ github.event.inputs.version_type }} release"
-              yarn release --${{ github.event.inputs.version_type }}
+              yarn release --${{ github.event.inputs.version_type }} --ci
             fi
           fi
 
