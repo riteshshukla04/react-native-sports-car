@@ -1,0 +1,104 @@
+{
+  "git": {
+    "commitMessage": "chore: release ${version}",
+    "tagName": "v${version}",
+    "requireCleanWorkingDir": true,
+    "requireUpstream": false,
+    "requireCommits": true
+  },
+  "npm": {
+    "publish": true,
+    "access": "public",
+    "publishPath": ".",
+    "ignoreVersion": false
+  },
+  "github": {
+    "release": true,
+    "releaseName": "Release ${version}",
+    "releaseNotes": null,
+    "draft": false,
+    "preRelease": false,
+    "autoGenerate": true
+  },
+  "plugins": {
+    "@release-it/conventional-changelog": {
+      "preset": {
+        "name": "angular",
+        "types": [
+          {
+            "type": "feat",
+            "section": "Features"
+          },
+          {
+            "type": "fix",
+            "section": "Bug Fixes"
+          },
+          {
+            "type": "perf",
+            "section": "Performance Improvements"
+          },
+          {
+            "type": "revert",
+            "section": "Reverts"
+          },
+          {
+            "type": "docs",
+            "section": "Documentation",
+            "hidden": false
+          },
+          {
+            "type": "style",
+            "section": "Styles",
+            "hidden": true
+          },
+          {
+            "type": "chore",
+            "section": "Miscellaneous Chores",
+            "hidden": true
+          },
+          {
+            "type": "refactor",
+            "section": "Code Refactoring",
+            "hidden": true
+          },
+          {
+            "type": "test",
+            "section": "Tests",
+            "hidden": true
+          },
+          {
+            "type": "build",
+            "section": "Build System",
+            "hidden": true
+          },
+          {
+            "type": "ci",
+            "section": "Continuous Integration",
+            "hidden": true
+          }
+        ]
+      },
+      "infile": "CHANGELOG.md"
+    }
+  },
+  "hooks": {
+    "before:init": [
+      "echo '🚀 Starting release process...'",
+      "yarn test",
+      "yarn lint",
+      "yarn typecheck",
+      "yarn prepare"
+    ],
+    "after:bump": [
+      "echo '📦 Version bumped successfully'",
+      "git add .",
+      "git commit --amend --no-edit"
+    ],
+    "after:release": [
+      "echo '✅ Release completed successfully!'",
+      "echo '📦 Package published to npm'",
+      "echo '🏷️  Git tag created'",
+      "echo '📝 GitHub release created'"
+    ]
+  }
+}
