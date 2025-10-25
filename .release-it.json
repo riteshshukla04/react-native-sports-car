@@ -1,11 +1,13 @@
 {
   "ci": true,
+  "increment": false,
   "git": {
     "commitMessage": "chore: release ${version}",
     "tagName": "v${version}",
     "requireCleanWorkingDir": true,
     "requireUpstream": false,
-    "requireCommits": true
+    "requireCommits": true,
+    "addUntrackedFiles": false
   },
   "npm": {
     "publish": true,
@@ -14,7 +16,9 @@
     "ignoreVersion": false,
     "publishConfig": {
       "registry": "https://registry.npmjs.org/"
-    }
+    },
+    "allowSameVersion": false,
+    "skipChecks": false
   },
   "github": {
     "release": true,
