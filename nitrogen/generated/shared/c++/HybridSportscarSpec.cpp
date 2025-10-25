@@ -16,6 +16,7 @@ namespace margelo::nitro::sportscar {
     registerHybrids(this, [](Prototype& prototype) {
       prototype.registerHybridMethod("initializeMediaLibrary", &HybridSportscarSpec::initializeMediaLibrary);
       prototype.registerHybridMethod("updateMediaLibrary", &HybridSportscarSpec::updateMediaLibrary);
+      prototype.registerHybridMethod("getMediaLibrary", &HybridSportscarSpec::getMediaLibrary);
       prototype.registerHybridMethod("setLayoutType", &HybridSportscarSpec::setLayoutType);
       prototype.registerHybridMethod("refreshAndroidAutoUI", &HybridSportscarSpec::refreshAndroidAutoUI);
       prototype.registerHybridMethod("playMedia", &HybridSportscarSpec::playMedia);

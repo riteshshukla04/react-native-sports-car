@@ -17,6 +17,7 @@ public protocol HybridSportscarSpec_protocol: HybridObject {
   // Methods
   func initializeMediaLibrary(mediaLibraryJson: String) throws -> Promise<Bool>
   func updateMediaLibrary(mediaLibraryJson: String) throws -> Promise<Bool>
+  func getMediaLibrary() throws -> Promise<String>
   func setLayoutType(layoutType: String) throws -> Promise<Bool>
   func refreshAndroidAutoUI() throws -> Promise<Bool>
   func playMedia(mediaId: String) throws -> Promise<Bool>

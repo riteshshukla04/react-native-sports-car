@@ -51,6 +51,10 @@ abstract class HybridSportscarSpec: HybridObject() {
   
   @DoNotStrip
   @Keep
+  abstract fun getMediaLibrary(): Promise<String>
+  
+  @DoNotStrip
+  @Keep
   abstract fun setLayoutType(layoutType: String): Promise<Boolean>
   
   @DoNotStrip

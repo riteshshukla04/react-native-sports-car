@@ -55,6 +55,7 @@ namespace margelo::nitro::sportscar {
     // Methods
     std::shared_ptr<Promise<bool>> initializeMediaLibrary(const std::string& mediaLibraryJson) override;
     std::shared_ptr<Promise<bool>> updateMediaLibrary(const std::string& mediaLibraryJson) override;
+    std::shared_ptr<Promise<std::string>> getMediaLibrary() override;
     std::shared_ptr<Promise<bool>> setLayoutType(const std::string& layoutType) override;
     std::shared_ptr<Promise<bool>> refreshAndroidAutoUI() override;
     std::shared_ptr<Promise<bool>> playMedia(const std::string& mediaId) override;

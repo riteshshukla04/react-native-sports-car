@@ -89,6 +89,14 @@ namespace margelo::nitro::sportscar {
       auto __value = std::move(__result.value());
       return __value;
     }
+    inline std::shared_ptr<Promise<std::string>> getMediaLibrary() override {
+      auto __result = _swiftPart.getMediaLibrary();
+      if (__result.hasError()) [[unlikely]] {
+        std::rethrow_exception(__result.error());
+      }
+      auto __value = std::move(__result.value());
+      return __value;
+    }
     inline std::shared_ptr<Promise<bool>> setLayoutType(const std::string& layoutType) override {
       auto __result = _swiftPart.setLayoutType(layoutType);
       if (__result.hasError()) [[unlikely]] {
