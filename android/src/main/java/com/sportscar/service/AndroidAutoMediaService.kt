@@ -54,6 +54,8 @@ class AndroidAutoMediaService : MediaBrowserServiceCompat() {
         const val ACTION_STOP = "com.margelo.nitro.sportscar.STOP"
         const val ACTION_SEEK_TO = "com.margelo.nitro.sportscar.SEEK_TO"
         const val ACTION_SET_PLAYBACK_SPEED = "com.margelo.nitro.sportscar.SET_PLAYBACK_SPEED"
+        const val ACTION_SKIP_TO_NEXT = "com.margelo.nitro.sportscar.SKIP_TO_NEXT"
+        const val ACTION_SKIP_TO_PREVIOUS = "com.margelo.nitro.sportscar.SKIP_TO_PREVIOUS"
         const val ACTION_APP_STATE_CHANGED = "com.margelo.nitro.sportscar.APP_STATE_CHANGED"
         
         // Intent extras
@@ -218,6 +220,8 @@ class AndroidAutoMediaService : MediaBrowserServiceCompat() {
             addAction(ACTION_STOP)
             addAction(ACTION_SEEK_TO)
             addAction(ACTION_SET_PLAYBACK_SPEED)
+            addAction(ACTION_SKIP_TO_NEXT)
+            addAction(ACTION_SKIP_TO_PREVIOUS)
             addAction(ACTION_APP_STATE_CHANGED)
         }
         
@@ -379,6 +383,14 @@ class AndroidAutoMediaService : MediaBrowserServiceCompat() {
                 val speed = intent.getFloatExtra(EXTRA_PLAYBACK_SPEED, 1.0f)
                 setPlaybackSpeed(speed)
                 println("🏃 AndroidAutoMediaService: Background speed change")
+            }
+            ACTION_SKIP_TO_NEXT -> {
+                skipToNext()
+                println("⏭️ AndroidAutoMediaService: Background skip to next")
+            }
+            ACTION_SKIP_TO_PREVIOUS -> {
+                skipToPrevious()
+                println("⏮️ AndroidAutoMediaService: Background skip to previous")
             }
             ACTION_APP_STATE_CHANGED -> {
                 val appState = intent.getStringExtra(EXTRA_APP_STATE)
@@ -586,6 +598,40 @@ class AndroidAutoMediaService : MediaBrowserServiceCompat() {
             true
         } catch (e: Exception) {
             println("❌ AndroidAutoMediaService: Failed to set playback speed - ${e.message}")
+            false
+        }
+    }
+
+    fun skipToNext(): Boolean {
+        return try {
+            val nextMediaId = getNextMediaId()
+            if (nextMediaId != null) {
+                playMedia(nextMediaId)
+                println("⏭️ AndroidAutoMediaService: Skipped to next track: $nextMediaId")
+                true
+            } else {
+                println("⏭️ AndroidAutoMediaService: No next track available")
+                false
+            }
+        } catch (e: Exception) {
+            println("❌ AndroidAutoMediaService: Failed to skip to next - ${e.message}")
+            false
+        }
+    }
+
+    fun skipToPrevious(): Boolean {
+        return try {
+            val previousMediaId = getPreviousMediaId()
+            if (previousMediaId != null) {
+                playMedia(previousMediaId)
+                println("⏮️ AndroidAutoMediaService: Skipped to previous track: $previousMediaId")
+                true
+            } else {
+                println("⏮️ AndroidAutoMediaService: No previous track available")
+                false
+            }
+        } catch (e: Exception) {
+            println("❌ AndroidAutoMediaService: Failed to skip to previous - ${e.message}")
             false
         }
     }
@@ -881,6 +927,73 @@ class AndroidAutoMediaService : MediaBrowserServiceCompat() {
         println("🎵 AndroidAutoMediaService: Updated metadata for ${mediaItem.title} (${mediaItem.mediaType}) - Duration: ${duration}ms")
     }
 
+    /**
+     * Get the next playable media item ID in the current context
+     * This method finds the next track in the same folder/playlist as the current track
+     */
+    private fun getNextMediaId(): String? {
+        val currentId = currentMediaItem?.id ?: return null
+        val playableItems = getAllPlayableItems()
+        val currentIndex = playableItems.indexOfFirst { it.id == currentId }
+        
+        return if (currentIndex >= 0 && currentIndex < playableItems.size - 1) {
+            playableItems[currentIndex + 1].id
+        } else {
+            // If at the end, optionally loop back to the beginning (depending on repeat mode)
+            if (exoPlayer.repeatMode == Player.REPEAT_MODE_ALL && playableItems.isNotEmpty()) {
+                playableItems[0].id
+            } else {
+                null
+            }
+        }
+    }
+
+    /**
+     * Get the previous playable media item ID in the current context
+     * This method finds the previous track in the same folder/playlist as the current track
+     */
+    private fun getPreviousMediaId(): String? {
+        val currentId = currentMediaItem?.id ?: return null
+        val playableItems = getAllPlayableItems()
+        val currentIndex = playableItems.indexOfFirst { it.id == currentId }
+        
+        return if (currentIndex > 0) {
+            playableItems[currentIndex - 1].id
+        } else {
+            // If at the beginning, optionally loop to the end (depending on repeat mode)
+            if (exoPlayer.repeatMode == Player.REPEAT_MODE_ALL && playableItems.isNotEmpty()) {
+                playableItems[playableItems.size - 1].id
+            } else {
+                null
+            }
+        }
+    }
+
+    /**
+     * Get all playable items from the media library in a flat list
+     * This creates a queue-like structure for next/previous navigation
+     */
+    private fun getAllPlayableItems(): List<AndroidAutoMediaItem> {
+        val playableItems = mutableListOf<AndroidAutoMediaItem>()
+        
+        fun collectPlayableItems(items: List<AndroidAutoMediaItem>) {
+            items.forEach { item ->
+                if (item.isPlayable && item.mediaUrl != null) {
+                    playableItems.add(item)
+                }
+                item.children?.let { children ->
+                    collectPlayableItems(children)
+                }
+            }
+        }
+        
+        mediaLibrary?.rootItems?.let { rootItems ->
+            collectPlayableItems(rootItems)
+        }
+        
+        return playableItems
+    }
+
     private fun updatePlaybackState(state: Int) {
         val playbackState = PlaybackStateCompat.Builder()
             .setActions(
@@ -888,7 +1001,9 @@ class AndroidAutoMediaService : MediaBrowserServiceCompat() {
                 PlaybackStateCompat.ACTION_PAUSE or
                 PlaybackStateCompat.ACTION_STOP or
                 PlaybackStateCompat.ACTION_SEEK_TO or
-                PlaybackStateCompat.ACTION_PLAY_FROM_MEDIA_ID
+                PlaybackStateCompat.ACTION_PLAY_FROM_MEDIA_ID or
+                PlaybackStateCompat.ACTION_SKIP_TO_NEXT or
+                PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS
             )
             .setState(state, exoPlayer.currentPosition, exoPlayer.playbackParameters.speed)
             .build()
@@ -925,6 +1040,18 @@ class AndroidAutoMediaService : MediaBrowserServiceCompat() {
         override fun onPlayFromMediaId(mediaId: String?, extras: Bundle?) {
             serviceScope.launch(Dispatchers.Main) {
                 mediaId?.let { playMedia(it) }
+            }
+        }
+
+        override fun onSkipToNext() {
+            serviceScope.launch(Dispatchers.Main) {
+                skipToNext()
+            }
+        }
+
+        override fun onSkipToPrevious() {
+            serviceScope.launch(Dispatchers.Main) {
+                skipToPrevious()
             }
         }
     }

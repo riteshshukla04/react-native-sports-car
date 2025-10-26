@@ -64,6 +64,8 @@ namespace margelo::nitro::sportscar {
     std::shared_ptr<Promise<bool>> stop() override;
     std::shared_ptr<Promise<bool>> seekTo(double positionMs) override;
     std::shared_ptr<Promise<bool>> setPlaybackSpeed(double speed) override;
+    std::shared_ptr<Promise<bool>> skipToNext() override;
+    std::shared_ptr<Promise<bool>> skipToPrevious() override;
     std::shared_ptr<Promise<PlaybackInfo>> getPlaybackState() override;
     std::shared_ptr<Promise<bool>> isCurrentlyPlaying() override;
     std::shared_ptr<Promise<std::optional<LastPlayedMediaInfo>>> getLastPlayedMediaInfo() override;

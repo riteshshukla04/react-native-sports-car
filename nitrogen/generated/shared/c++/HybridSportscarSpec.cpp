@@ -25,6 +25,8 @@ namespace margelo::nitro::sportscar {
       prototype.registerHybridMethod("stop", &HybridSportscarSpec::stop);
       prototype.registerHybridMethod("seekTo", &HybridSportscarSpec::seekTo);
       prototype.registerHybridMethod("setPlaybackSpeed", &HybridSportscarSpec::setPlaybackSpeed);
+      prototype.registerHybridMethod("skipToNext", &HybridSportscarSpec::skipToNext);
+      prototype.registerHybridMethod("skipToPrevious", &HybridSportscarSpec::skipToPrevious);
       prototype.registerHybridMethod("getPlaybackState", &HybridSportscarSpec::getPlaybackState);
       prototype.registerHybridMethod("isCurrentlyPlaying", &HybridSportscarSpec::isCurrentlyPlaying);
       prototype.registerHybridMethod("getLastPlayedMediaInfo", &HybridSportscarSpec::getLastPlayedMediaInfo);

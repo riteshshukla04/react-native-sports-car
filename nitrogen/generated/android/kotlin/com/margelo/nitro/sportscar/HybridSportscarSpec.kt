@@ -87,6 +87,14 @@ abstract class HybridSportscarSpec: HybridObject() {
   
   @DoNotStrip
   @Keep
+  abstract fun skipToNext(): Promise<Boolean>
+  
+  @DoNotStrip
+  @Keep
+  abstract fun skipToPrevious(): Promise<Boolean>
+  
+  @DoNotStrip
+  @Keep
   abstract fun getPlaybackState(): Promise<PlaybackInfo>
   
   @DoNotStrip

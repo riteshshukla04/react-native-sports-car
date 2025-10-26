@@ -214,6 +214,16 @@ export interface AndroidAutoMediaPlayer {
   setPlaybackSpeed(speed: number): Promise<boolean>;
 
   /**
+   * Skip to next track in the current playlist/queue
+   */
+  skipToNext(): Promise<boolean>;
+
+  /**
+   * Skip to previous track in the current playlist/queue
+   */
+  skipToPrevious(): Promise<boolean>;
+
+  /**
    * Handle app state changes (foreground/background/destroyed)
    * This allows the service to respond to app lifecycle changes
    */

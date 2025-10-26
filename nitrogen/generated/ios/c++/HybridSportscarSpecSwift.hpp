@@ -161,6 +161,22 @@ namespace margelo::nitro::sportscar {
       auto __value = std::move(__result.value());
       return __value;
     }
+    inline std::shared_ptr<Promise<bool>> skipToNext() override {
+      auto __result = _swiftPart.skipToNext();
+      if (__result.hasError()) [[unlikely]] {
+        std::rethrow_exception(__result.error());
+      }
+      auto __value = std::move(__result.value());
+      return __value;
+    }
+    inline std::shared_ptr<Promise<bool>> skipToPrevious() override {
+      auto __result = _swiftPart.skipToPrevious();
+      if (__result.hasError()) [[unlikely]] {
+        std::rethrow_exception(__result.error());
+      }
+      auto __value = std::move(__result.value());
+      return __value;
+    }
     inline std::shared_ptr<Promise<PlaybackInfo>> getPlaybackState() override {
       auto __result = _swiftPart.getPlaybackState();
       if (__result.hasError()) [[unlikely]] {

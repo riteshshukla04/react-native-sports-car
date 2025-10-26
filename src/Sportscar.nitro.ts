@@ -64,6 +64,8 @@ export interface Sportscar
   stop(): Promise<boolean>;
   seekTo(positionMs: number): Promise<boolean>;
   setPlaybackSpeed(speed: number): Promise<boolean>;
+  skipToNext(): Promise<boolean>;
+  skipToPrevious(): Promise<boolean>;
 
   // Playback State Management
   getPlaybackState(): Promise<PlaybackInfo>;

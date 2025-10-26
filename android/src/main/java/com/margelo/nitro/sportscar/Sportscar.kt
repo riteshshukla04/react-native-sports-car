@@ -240,6 +240,36 @@ class Sportscar : HybridSportscarSpec() {
     return promise
   }
 
+  override fun skipToNext(): Promise<Boolean> {
+    val promise = Promise<Boolean>()
+    try {
+      val success = mediaService?.skipToNext() ?: false
+      promise.resolve(success)
+      if (success) {
+        println("⏭️ Sportscar: Skipped to next track")
+      }
+    } catch (e: Exception) {
+      println("❌ Sportscar: Failed to skip to next - ${e.message}")
+      promise.reject(e)
+    }
+    return promise
+  }
+
+  override fun skipToPrevious(): Promise<Boolean> {
+    val promise = Promise<Boolean>()
+    try {
+      val success = mediaService?.skipToPrevious() ?: false
+      promise.resolve(success)
+      if (success) {
+        println("⏮️ Sportscar: Skipped to previous track")
+      }
+    } catch (e: Exception) {
+      println("❌ Sportscar: Failed to skip to previous - ${e.message}")
+      promise.reject(e)
+    }
+    return promise
+  }
+
   override fun getPlaybackState(): Promise<PlaybackInfo> {
     val promise = Promise<PlaybackInfo>()
     try {

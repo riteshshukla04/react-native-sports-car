@@ -26,6 +26,8 @@ public protocol HybridSportscarSpec_protocol: HybridObject {
   func stop() throws -> Promise<Bool>
   func seekTo(positionMs: Double) throws -> Promise<Bool>
   func setPlaybackSpeed(speed: Double) throws -> Promise<Bool>
+  func skipToNext() throws -> Promise<Bool>
+  func skipToPrevious() throws -> Promise<Bool>
   func getPlaybackState() throws -> Promise<PlaybackInfo>
   func isCurrentlyPlaying() throws -> Promise<Bool>
   func getLastPlayedMediaInfo() throws -> Promise<LastPlayedMediaInfo?>

@@ -9,10 +9,17 @@ import {
 } from 'react-native';
 import AndroidAuto from 'react-native-sportscar';
 import type { MediaLibrary, PlaybackInfo } from 'react-native-sportscar';
+import {
+  createPlaylist,
+  getPlaylistStats,
+  type PlaylistItem,
+} from 'react-native-sportscar';
 
 const AndroidAutoExample: React.FC = () => {
   const [playbackInfo, setPlaybackInfo] = useState<PlaybackInfo | null>(null);
   const [isInitialized, setIsInitialized] = useState(false);
+  const [currentPlaylist, setCurrentPlaylist] = useState<PlaylistItem[]>([]);
+  const [playlistStats, setPlaylistStats] = useState<any>(null);
   // Note: Nitro modules use callbacks instead of subscriptions, so no need for subscriptionsRef
 
   // Sample media library with songs and videos
@@ -68,6 +75,40 @@ const AndroidAutoExample: React.FC = () => {
                   durationMs: 210000, // 3.5 minutes
                   metadata: {
                     genre: 'Rock',
+                    year: 2023,
+                    album: 'Greatest Hits',
+                  },
+                },
+                {
+                  id: 'song_3',
+                  title: 'Sample Song 3',
+                  subtitle: 'Third Artist',
+                  iconUrl:
+                    'https://plus.unsplash.com/premium_photo-1664474619075-644dd191935f?q=80&w=1738&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+                  isPlayable: true,
+                  mediaType: 'audio',
+                  mediaUrl:
+                    'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3',
+                  durationMs: 195000, // 3.25 minutes
+                  metadata: {
+                    genre: 'Jazz',
+                    year: 2023,
+                    album: 'Greatest Hits',
+                  },
+                },
+                {
+                  id: 'song_4',
+                  title: 'Sample Song 4',
+                  subtitle: 'Fourth Artist',
+                  iconUrl:
+                    'https://plus.unsplash.com/premium_photo-1664474619075-644dd191935f?q=80&w=1738&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+                  isPlayable: true,
+                  mediaType: 'audio',
+                  mediaUrl:
+                    'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3',
+                  durationMs: 225000, // 3.75 minutes
+                  metadata: {
+                    genre: 'Electronic',
                     year: 2023,
                     album: 'Greatest Hits',
                   },
@@ -150,8 +191,17 @@ const AndroidAutoExample: React.FC = () => {
         await AndroidAuto.initializeMediaLibrary(sampleMediaLibrary);
       if (success) {
         setIsInitialized(true);
+
+        // Create a playlist from all playable items
+        const playlist = createPlaylist(sampleMediaLibrary, {
+          includeAllItems: true,
+        });
+        setCurrentPlaylist(playlist);
+        setPlaylistStats(getPlaylistStats(playlist));
+
         Alert.alert('Success', 'Android Auto media library initialized!');
         console.log('✅ Android Auto initialized successfully');
+        console.log('📋 Created playlist with', playlist.length, 'tracks');
       } else {
         Alert.alert('Error', 'Failed to initialize Android Auto');
       }
@@ -167,8 +217,8 @@ const AndroidAutoExample: React.FC = () => {
     AndroidAuto.setMediaPlayerEventCallback(null);
 
     // Set up callbacks for playback state changes (Nitro modules use callbacks instead of event listeners)
-    AndroidAuto.setPlaybackStateCallback((playbackInfo) => {
-      console.log('🎵 Playback state changed:', playbackInfo);
+    AndroidAuto.setPlaybackStateCallback((playbackInfos) => {
+      console.log('🎵 Playback state changed:', playbackInfos);
       updatePlaybackInfo();
     });
 
@@ -257,6 +307,36 @@ const AndroidAutoExample: React.FC = () => {
     }
   };
 
+  const handleSkipToNext = async () => {
+    try {
+      const success = await AndroidAuto.skipToNext();
+      if (success) {
+        console.log('⏭️ Skipped to next track');
+        updatePlaybackInfo();
+      } else {
+        Alert.alert('Info', 'No next track available');
+      }
+    } catch (error) {
+      console.error('Failed to skip to next:', error);
+      Alert.alert('Error', 'Failed to skip to next track');
+    }
+  };
+
+  const handleSkipToPrevious = async () => {
+    try {
+      const success = await AndroidAuto.skipToPrevious();
+      if (success) {
+        console.log('⏮️ Skipped to previous track');
+        updatePlaybackInfo();
+      } else {
+        Alert.alert('Info', 'No previous track available');
+      }
+    } catch (error) {
+      console.error('Failed to skip to previous:', error);
+      Alert.alert('Error', 'Failed to skip to previous track');
+    }
+  };
+
   const handleSetLayoutType = async (layoutType: 'grid' | 'list') => {
     try {
       await AndroidAuto.setLayoutType(layoutType);
@@ -318,6 +398,22 @@ const AndroidAutoExample: React.FC = () => {
           <Text>Position: {Math.round(playbackInfo.positionMs / 1000)}s</Text>
           <Text>Duration: {Math.round(playbackInfo.durationMs / 1000)}s</Text>
           <Text>Speed: {playbackInfo.playbackSpeed}x</Text>
+          {playbackInfo.currentMediaId && (
+            <Text>Current: {playbackInfo.currentMediaId}</Text>
+          )}
+        </View>
+      )}
+
+      {playlistStats && (
+        <View style={styles.playlistInfo}>
+          <Text style={styles.playlistTitle}>Playlist Info</Text>
+          <Text>Tracks: {playlistStats.totalTracks}</Text>
+          <Text>Duration: {playlistStats.totalDurationMinutes} min</Text>
+          <Text>
+            Audio: {playlistStats.audioTracks}, Video:{' '}
+            {playlistStats.videoTracks}
+          </Text>
+          <Text>Current playlist: {currentPlaylist.length} items loaded</Text>
         </View>
       )}
 
@@ -345,6 +441,15 @@ const AndroidAutoExample: React.FC = () => {
         </TouchableOpacity>
         <TouchableOpacity style={styles.button} onPress={handleStop}>
           <Text style={styles.buttonText}>Stop</Text>
+        </TouchableOpacity>
+      </View>
+
+      <View style={styles.buttonRow}>
+        <TouchableOpacity style={styles.button} onPress={handleSkipToPrevious}>
+          <Text style={styles.buttonText}>⏮️ Previous</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.button} onPress={handleSkipToNext}>
+          <Text style={styles.buttonText}>⏭️ Next</Text>
         </TouchableOpacity>
       </View>
 
@@ -480,6 +585,18 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 6,
     marginBottom: 15,
+  },
+  playlistInfo: {
+    backgroundColor: '#e8f4fd',
+    padding: 10,
+    borderRadius: 6,
+    marginBottom: 15,
+  },
+  playlistTitle: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    marginBottom: 5,
+    color: '#1976d2',
   },
 });
 

@@ -188,6 +188,10 @@ await AndroidAuto.pause();
 await AndroidAuto.resume();
 await AndroidAuto.stop();
 
+// Next/Previous tracks
+await AndroidAuto.skipToNext();
+await AndroidAuto.skipToPrevious();
+
 // Seek to position (in milliseconds)
 await AndroidAuto.seekTo(120000); // Seek to 2 minutes
 
@@ -238,6 +242,23 @@ useEffect(() => {
 }, []);
 ```
 
+### Playlist Management
+
+```typescript
+import { createPlaylist, getNextTrack, getPreviousTrack } from 'react-native-sportscar';
+
+// Create playlist from all playable items
+const playlist = createPlaylist(mediaLibrary, { includeAllItems: true });
+
+// Navigate tracks manually
+const nextTrackId = getNextTrack(playlist, currentTrackId, true); // with repeat
+const prevTrackId = getPreviousTrack(playlist, currentTrackId, true);
+
+if (nextTrackId) {
+  await AndroidAuto.playMedia(nextTrackId);
+}
+```
+
 ### Dynamic Library Updates
 
 ```typescript
@@ -282,6 +303,8 @@ await AndroidAuto.setLayoutType('GRID');
 | `pause`                       | -                                            | `Promise<boolean>`                     | Pause playback                  |
 | `resume`                      | -                                            | `Promise<boolean>`                     | Resume playback                 |
 | `stop`                        | -                                            | `Promise<boolean>`                     | Stop playback                   |
+| `skipToNext`                  | -                                            | `Promise<boolean>`                     | Skip to next track              |
+| `skipToPrevious`              | -                                            | `Promise<boolean>`                     | Skip to previous track          |
 | `seekTo`                      | `positionMs: number`                         | `Promise<boolean>`                     | Seek to position                |
 | `setPlaybackSpeed`            | `speed: number`                              | `Promise<boolean>`                     | Set playback speed              |
 | `getPlaybackState`            | -                                            | `Promise<PlaybackInfo>`                | Get current state               |

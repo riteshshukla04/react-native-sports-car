@@ -273,6 +273,30 @@ export const AndroidAuto: AndroidAutoMediaPlayer = {
   },
 
   /**
+   * Skip to next track in the current playlist/queue
+   * @returns Promise<boolean> - true if skip was successful
+   */
+  skipToNext: () => {
+    if (!checkPlatformAndModule('skipToNext')) {
+      return Promise.resolve(false);
+    }
+
+    return getSportscarHybridObject().skipToNext();
+  },
+
+  /**
+   * Skip to previous track in the current playlist/queue
+   * @returns Promise<boolean> - true if skip was successful
+   */
+  skipToPrevious: () => {
+    if (!checkPlatformAndModule('skipToPrevious')) {
+      return Promise.resolve(false);
+    }
+
+    return getSportscarHybridObject().skipToPrevious();
+  },
+
+  /**
    * Handle app state changes (foreground/background/destroyed)
    * This allows the service to respond to app lifecycle changes
    * @param appState - Current app state
@@ -369,6 +393,9 @@ export * from './types';
 
 // Export hooks
 export * from './hooks';
+
+// Export utilities
+export * from './utils/playlistUtils';
 
 // Default export
 export default AndroidAuto;
