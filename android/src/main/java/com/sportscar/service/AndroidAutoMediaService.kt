@@ -173,8 +173,19 @@ class AndroidAutoMediaService : MediaBrowserServiceCompat() {
 
     private fun initializeMediaSession() {
         mediaSession = MediaSessionCompat(this, "AndroidAutoMediaService").apply {
+            // Set flags to handle media buttons and transport controls
+            setFlags(
+                MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS or
+                MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS
+            )
+            
+            // Set callback to handle physical button events from car steering wheel
             setCallback(MediaSessionCallback())
+            
+            // Activate the session to receive events
             isActive = true
+            
+            println("🎮 AndroidAutoMediaService: Media session initialized with button handling")
         }
         sessionToken = mediaSession.sessionToken
     }
@@ -207,6 +218,9 @@ class AndroidAutoMediaService : MediaBrowserServiceCompat() {
                 setMediaSessionToken(sessionToken!!)
                 setUseRewindAction(false)
                 setUseFastForwardAction(false)
+                // Enable next/previous buttons in notification and Android Auto
+                setUseNextAction(true)
+                setUsePreviousAction(true)
             }
     }
     
@@ -995,61 +1009,82 @@ class AndroidAutoMediaService : MediaBrowserServiceCompat() {
     }
 
     private fun updatePlaybackState(state: Int) {
-        val playbackState = PlaybackStateCompat.Builder()
-            .setActions(
-                PlaybackStateCompat.ACTION_PLAY or
+        // Build available actions based on queue position
+        var actions = PlaybackStateCompat.ACTION_PLAY or
                 PlaybackStateCompat.ACTION_PAUSE or
                 PlaybackStateCompat.ACTION_STOP or
                 PlaybackStateCompat.ACTION_SEEK_TO or
                 PlaybackStateCompat.ACTION_PLAY_FROM_MEDIA_ID or
-                PlaybackStateCompat.ACTION_SKIP_TO_NEXT or
-                PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS
-            )
+                PlaybackStateCompat.ACTION_PLAY_PAUSE
+        
+        // Add skip actions if next/previous tracks are available
+        val hasNext = getNextMediaId() != null
+        val hasPrevious = getPreviousMediaId() != null
+        
+        if (hasNext) {
+            actions = actions or PlaybackStateCompat.ACTION_SKIP_TO_NEXT
+        }
+        
+        if (hasPrevious) {
+            actions = actions or PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS
+        }
+        
+        val playbackState = PlaybackStateCompat.Builder()
+            .setActions(actions)
             .setState(state, exoPlayer.currentPosition, exoPlayer.playbackParameters.speed)
             .build()
 
         mediaSession.setPlaybackState(playbackState)
+        
+        println("🎮 AndroidAutoMediaService: Playback state updated - State: $state, HasNext: $hasNext, HasPrevious: $hasPrevious")
     }
 
     // Media session callback
     private inner class MediaSessionCallback : MediaSessionCompat.Callback() {
         override fun onPlay() {
+            println("🎮 MediaSessionCallback: onPlay() called (physical button or screen)")
             serviceScope.launch(Dispatchers.Main) {
                 resume()
             }
         }
 
         override fun onPause() {
+            println("🎮 MediaSessionCallback: onPause() called (physical button or screen)")
             serviceScope.launch(Dispatchers.Main) {
                 pause()
             }
         }
 
         override fun onStop() {
+            println("🎮 MediaSessionCallback: onStop() called (physical button or screen)")
             serviceScope.launch(Dispatchers.Main) {
                 stop()
             }
         }
 
         override fun onSeekTo(pos: Long) {
+            println("🎮 MediaSessionCallback: onSeekTo($pos) called")
             serviceScope.launch(Dispatchers.Main) {
                 seekTo(pos)
             }
         }
 
         override fun onPlayFromMediaId(mediaId: String?, extras: Bundle?) {
+            println("🎮 MediaSessionCallback: onPlayFromMediaId($mediaId) called")
             serviceScope.launch(Dispatchers.Main) {
                 mediaId?.let { playMedia(it) }
             }
         }
 
         override fun onSkipToNext() {
+            println("🎮🚗 MediaSessionCallback: onSkipToNext() called - STEERING WHEEL NEXT BUTTON PRESSED!")
             serviceScope.launch(Dispatchers.Main) {
                 skipToNext()
             }
         }
 
         override fun onSkipToPrevious() {
+            println("🎮🚗 MediaSessionCallback: onSkipToPrevious() called - STEERING WHEEL PREVIOUS BUTTON PRESSED!")
             serviceScope.launch(Dispatchers.Main) {
                 skipToPrevious()
             }
